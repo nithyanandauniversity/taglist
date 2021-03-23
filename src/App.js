@@ -1,25 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import './App.css';
+import TagsList from './TagList'
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
+
+class App extends Component {
+  render() {
+    console.log("Host URL" + process.env.PUBLIC_URL);
+    return (
+      <Router basename={process.env.PUBLIC_URL}>
+        <div className="App">
+
+          <Switch>
+            <Route exact path="/" render={() => (
+              <Redirect to="/taglist" />
+            )} />
+            <Route exact path='/taglist' component={TagsList} />
+          </Switch>
+        </div>
+      </Router>
+    );
+  }
 }
 
 export default App;
