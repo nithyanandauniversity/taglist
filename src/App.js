@@ -3,8 +3,17 @@ import React, { Component } from 'react';
 import './App.css';
 import TagsList from './TagList'
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
+import Output from './Output'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 class App extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      path: "/"
+    }
+  }
+
   render() {
     console.log("Host URL" + process.env.PUBLIC_URL);
     return (
@@ -12,10 +21,9 @@ class App extends Component {
         <div className="App">
 
           <Switch>
-            <Route exact path="/" render={() => (
-              <Redirect to="/taglist" />
-            )} />
+            {<Route exact path="/" render={() => (<Redirect to="/taglist" />)} />}
             <Route exact path='/taglist' component={TagsList} />
+            <Route exact path='/output' component={Output} />
           </Switch>
         </div>
       </Router>

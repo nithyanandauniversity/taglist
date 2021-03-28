@@ -1,51 +1,60 @@
 import React, { Component } from 'react';
-import Panel from 'react-bootstrap/lib/Panel'
 import axios from 'axios'
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from 'react-responsive-carousel';
 import ReactTags from 'react-tag-autocomplete'
-import { Left } from 'react-bootstrap/lib/Media';
+import { HashLink as Link } from 'react-router-hash-link';
+import './styles.css'
+import Card from 'react-bootstrap/Card';
 
-
-//This Component is a child Component of Customers Component
 export default class TaggedItems extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      tags: [
-        { id: 1, name: "Program-French" },
-        { id: 2, name: "ArSP" },
-      ],
-
+      tags: []
     }
-  }
+    this.reactTags = React.createRef();
 
+  }
   getTagListData() {
-    axios.get('assets/tags/taglist.json').then(response => {
-      this.setState({ tagList: response.data })
-      this.setState({ suggestions: response.data })
+    //assets/tags/taglist.json
+    let tagsData = [];
+    axios.get('http://localhost:4000/tags').then(response => {
+      axios.get('http://localhost:4000/images').then(images => {
+        let currentRid = this.props.selectedTag['@rid'];
+        let tagged = images.data.filter(e => {
+          if (e.tags && e.tags.indexOf(currentRid) > -1) return e
+        });
+
+        let currentImage = tagged[0] ? tagged[0] : [];
+        let currentImageTagIds = currentImage.tags ? currentImage.tags : [];
+        let currentImageTags = response.data.filter(e => {
+          if (currentImageTagIds.indexOf(e['@rid']) > -1) return e
+        });
+
+        console.log('inTagList ::::', currentImage, currentImageTagIds, currentImageTags);
+
+
+        this.setState({
+          tagList: response.data, searchResult: response.data,
+          suggestions: response.data, tags: currentImageTags, tagged: tagged,
+          currentImage: currentImage, images: images.data
+        })
+      });
     })
   };
-
   //function which is called the first time the component loads
   componentDidMount() {
     this.getTagListData();
-  }
-
-  //Function which is called whenver the component is updated
-  componentDidUpdate(prevProps) {
-
-    //get Customer Details only if props has changed
-    if (this.props.val !== prevProps.val) {
-      this.getTagDetails(this.props.val)
-    }
   }
 
   onDelete(i) {
     const tags = this.state.tags.slice(0)
     tags.splice(i, 1)
     this.setState({ tags })
+    // let selectedTag = this.state.tagList.filter(e => { if (e.id === currentRid) return e })[0];
+
   }
 
   onAddition(tag) {
@@ -53,75 +62,139 @@ export default class TaggedItems extends Component {
     this.setState({ tags })
   }
 
-  //Function to Load the customerdetails data from json.
-  // getTagDetails(id) {
-  //   axios.get('assets/tags/tag' + id + '.json').then(response => {
-  //     this.setState({ customerDetails: response })
-  //   })
-  // };
 
-  handleInputChange = (img) => {
-
+  handleInputChange = () => {
+    return '';
   }
+
+
+  loadImageTags = (index, ele) => {
+    console.log('this.state.tagged[index]', this.state.tagged[index]);
+    let currentImage = this.state.tagged[index];
+    // let imageTags = currentImage.tags ? currentImage.tags : [];
+    let currentImageTagIds = currentImage.tags ? currentImage.tags : [];
+    // console.log('imageTags', imageTags);
+
+    let tags = this.state.suggestions; // all tags
+    let currentImageTags = tags.filter(e => {
+      if (currentImageTagIds.indexOf(e['@rid']) > -1) return e
+    });
+    console.log('Slected Image', currentImage, currentImageTagIds, currentImageTags)
+
+    return this.setState({ tags: currentImageTags, currentImage: currentImage });
+  }
+
+
   render() {
-    if (!this.state.tagList) return (<p>Loading Data</p>);
-    let selectedTag = this.state.tagList.filter(e => { if (e.id === this.props.currentId) return e })[0];
-    console.log('selected Tag', selectedTag, this.props.currentId);
-    return (<div className="customerdetails">
-      <Panel bsStyle="info" className="centeralign">
-        <Panel.Heading>
-          <Panel.Title componentClass="h3"><p><b>Tag Name:</b> {selectedTag.name} ,  <b>Description:</b> {selectedTag.description}</p></Panel.Title>
-          <br />
+    if (!this.state.tagList || !this.state.images) return (<p>Loading Data</p>);
 
-          <p>
-            <b>ParentTags:</b> {selectedTag.parenTagstHirearchy.map(tag => {
-              return (tag === "" ? "" : tag + '>');
-            })} </p>
-
-          <p>
-            <b>ChildTags:</b> {selectedTag.childTagsHirearchy.map(tag => {
-              return (tag === "" ? "" : tag + '>');
-            })}
-          </p>
-          <br />
-          "{selectedTag.name}" Tag is taggged to below images, each image will have their own tag list, which can be added or removed.
-        </Panel.Heading>
-        <Panel.Body>
-          <ReactTags
-            ref={this.reactTags}
-            tags={this.state.tags}
-            autoresize={false}
-            suggestions={this.state.suggestions}
-            onDelete={this.onDelete.bind(this)}
-            onAddition={this.onAddition.bind(this)}
-            classNames={{ root: 'react-tags' }}
-          />
-          <br />
-          <Carousel>
-            {selectedTag.tagged.map(img => {
-              return (<div><img src={'/images/' + img.src} /><p><b> File:{img.src},&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{img.title}</b></p>
-                <form style={{ 'textAlign': 'left' }}>
-                  <label>
-                    Title: </label>
-                  <input name="title"
-                    type="text"
-                    value={img.title}
-                    onChange={this.handleInputChange} />
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>
-                    Description: </label>
-                  <input name="description"
-                    type="text"
-                    value={img.description}
-                    onChange={this.handleInputChange} />
-
-                </form>
-              </div>);
-            })}
-          </Carousel>
+    let currentRid = this.props.selectedTag['@rid'];
+    let selectedTag = this.props.selectedTag;
 
 
-        </Panel.Body>
-      </Panel>
-    </div >)
+    let tags = this.state.suggestions;
+    let images = this.state.images;
+
+    // let currentRid = selectedTag; //this.props.selectedTag['@rid'];
+    let tagged = images.filter(e => {
+      if (e.tags && e.tags.indexOf(currentRid) > -1) return e
+    });
+
+    let currentImage = tagged[0] ? tagged[0] : [];
+    let currentImageTagIds = currentImage.tags ? currentImage.tags : [];
+    let currentImageTags = tags.filter(e => {
+      if (currentImageTagIds.indexOf(e['@rid']) > -1) return e
+    });
+
+    let similarImageIds = currentImage.in_Similar.delegate.entries ? currentImage.in_Similar.delegate.entries : []; //["#38:0", "#38:1", "#38:2"]
+
+    let similarImage = images.filter(e => {
+      // console.log(similarImageIds, e['@rid'], e.name);
+      if (similarImageIds.indexOf(e['@rid']) > -1) return e
+    });
+
+
+    let similarImageTags = this.state.similarImageTags ? this.state.image.similarImageTags :
+      tags.filter(e => {
+        if (similarImageIds.indexOf(e['@rid']) > -1) return e
+      });
+
+    // if (!this.state.tagList) return (<p>Loading Data</p>);
+    // let selectedTag = this.state.tags.filter(e => {
+    //   console.log('.......', e, e['@rid'], currentRid);
+    //   if (e['@rid'] === currentRid) return e;
+    // })[0];
+    console.log('From renderer selectedTag', selectedTag, currentImage, currentImageTags, similarImage);
+    return (
+      <div>
+        <div id="editTags">
+          <Card className="centeralign">
+            <Card.Header>
+              <h3><center><b>Edit Tags</b></center></h3>
+              <Card.Title><b>Tag Name:</b> <div className="badge primary">{selectedTag.name}&nbsp;</div>  <b>Description:</b>{selectedTag.description}</Card.Title>
+              {/* <b>ParentTags:</b> {selectedTag.parentTags.map(tag => {
+            return (tag === "" ? "" : <div className="badge primary">{tag}&nbsp;</div>);
+          })} */}
+              {/* <b>ChildTags:</b> {selectedTag.childTags.map(tag => {
+              return (tag === "" ? "" : <div className="badge primary">{tag}&nbsp;</div>);
+            })} */}
+              <center>This Tag is taggged to below images, each image will have their own tag list, which can be added or removed.</center>
+              {/* <Link to={{ pathname: "/taglist#preview", id: currentRid }} className="btn btn-primary">Preview</Link> */}
+            </Card.Header>
+            <Card.Body>
+              <br />
+              <Carousel onChange={(index, ele) => this.loadImageTags(index, ele)} dynamicHeight={true}>
+                {tagged.map(img => {
+                  return (<div key={img['@rid']}>
+                    <form style={{ 'textAlign': 'left' }}>
+                      <label>Title: </label><input className="form-control" name="title"
+                        type="text"
+                        value={img.title}
+                        onChange={this.handleInputChange} />
+                      <label>Description: </label><input className="form-control" name="description"
+                        type="text"
+                        value={img.description}
+                        onChange={this.handleInputChange} />
+                    </form>
+
+                    File:{img.name}, Path: {img.path}, Title: {img.title}, Dimension:{img.width}x{img.height}
+                    <img src={'./images/' + img.path} onError={(e) => {
+                      e.target.onerror = null; e.target.src = "https://via.placeholder.com/600x200.png?text=..."
+                    }} />
+                    <br />
+
+                  </div>);
+                })}
+              </Carousel>
+              <ReactTags
+                ref={this.reactTags}
+                tags={this.state.tags}
+                autoresize={false}
+                suggestions={this.state.suggestions}
+                onDelete={this.onDelete.bind(this)}
+                onAddition={this.onAddition.bind(this)}
+                minQueryLength={1}
+                classNames={{
+                  root: 'react-tags',
+                  rootFocused: 'is-focused',
+                  selected: 'react-tags__selected',
+                  selectedTag: 'react-tags__selected-tag',
+                  selectedTagName: 'react-tags__selected-tag-name',
+                  search: 'react-tags__search',
+                  searchWrapper: 'react-tags__search-wrapper',
+                  searchInput: 'react-tags__search-input',
+                  suggestions: 'react-tags__suggestions',
+                  suggestionActive: 'is-active',
+                  suggestionDisabled: 'is-disabled'
+                }}
+              />
+            </Card.Body>
+          </Card>
+        </div>
+
+      </div >
+    )
   }
 }
+
+

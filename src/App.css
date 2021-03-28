@@ -9,9 +9,10 @@
 }
 
 .App-header {
-  background-color: rgb(61, 219, 224);
-  height:200px;
+  background-color: rgb(50, 160, 160);
+  height:110px;
   padding-left: 30px;
+  color: white;
 }
 
 .App-title {

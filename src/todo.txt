@@ -1,0 +1,98 @@
+TODO: add Similar
+
+
+onDeleteSimilar(i) {
+    const tags = this.state.similarImagetags.slice(0)
+    tags.splice(i, 1)
+    this.setState({ similarImagetags: tags })
+    // let selectedTag = this.state.tagList.filter(e => { if (e.id === currentRid) return e })[0];
+
+}
+onAdditionSimilar(tag) {
+    const tags = [].concat(this.state.similarImagetags, tag)
+    this.setState({ similarImagetags: tags })
+}
+
+
+loadSimilarImageTags = (index, ele) => {
+    console.log('this.state.tagged[index]', this.state.tagged[index]);
+    let currentImage = this.state.tagged[index];
+    // let imageTags = currentImage.tags ? currentImage.tags : [];
+    let currentImageTagIds = currentImage.tags ? currentImage.tags : [];
+    // console.log('imageTags', imageTags);
+
+    let tags = this.state.suggestions; // all tags
+    let currentImageTags = tags.filter(e => {
+        if (currentImageTagIds.indexOf(e['@rid']) > -1) return e
+    });
+    console.log('Slected Image', currentImage, currentImageTagIds, currentImageTags)
+
+    return this.setState({ tags: currentImageTags, currentImage: currentImage });
+}
+
+/////////////////////////////////////////////////////////////////////
+
+< div id="SimilarImages" >
+    <Card className="centeralign">
+        <Card.Header>
+            <h3><center><b>Similar Images</b></center></h3>
+            <Card.Title>Below are the Images which are similar to the currentImage and NOT Tagged <div className="badge primary">{selectedTag.name}&nbsp;</div></Card.Title>
+            {/* <b>ParentTags:</b> {selectedTag.parentTags.map(tag => {
+return (tag === "" ? "" : <div className="badge primary">{tag}&nbsp;</div>);
+})} */}
+            {/* <b>ChildTags:</b> {selectedTag.childTags.map(tag => {
+  return (tag === "" ? "" : <div className="badge primary">{tag}&nbsp;</div>);
+})} */}
+            <center>This Tag is taggged to below images, each image will have their own tag list, which can be added or removed.</center>
+            {/* <Link to={{ pathname: "/taglist#preview", id: currentRid }} className="btn btn-primary">Preview</Link> */}
+        </Card.Header>
+        <Card.Body>
+            <br />
+            {similarImage === [] ? '' : <div>
+                <Carousel onChange={(index, ele) => this.loadSimilarImageTags(index, ele)} dynamicHeight={true}>
+                    {similarImage.map(img => {
+                        return (<div>
+                            <p><b> File:{img.name}, Path: {img.path}, Title: {img.title}, Dimension:{img.width}x{img.height}</b></p>
+                            <img src={'./images/' + img.path} onError={(e) => {
+                                e.target.onerror = null; e.target.src = "https://via.placeholder.com/600x200.png?text=..."
+                            }} />
+
+                            <form style={{ 'textAlign': 'left' }}>
+                                <label>Title: </label><input className="form-control" name="title"
+                                    type="text"
+                                    value={img.title}
+                                    onChange={this.handleInputChange} />
+                                <label>Description: </label><input className="form-control" name="description"
+                                    type="text"
+                                    value={img.description}
+                                    onChange={this.handleInputChange} />
+                            </form>
+                        </div>);
+                    })}
+                </Carousel>
+                <ReactTags
+                    ref={this.reactSimilarTags}
+                    tags={similarImageTags}
+                    autoresize={false}
+                    suggestions={this.state.suggestions}
+                    onDelete={this.onDeleteSimilar.bind(this)}
+                    onAddition={this.onAdditionSimilar.bind(this)}
+                    minQueryLength={1}
+                    classNames={{
+                        root: 'react-tags',
+                        rootFocused: 'is-focused',
+                        selected: 'react-tags__selected',
+                        selectedTag: 'react-tags__selected-tag',
+                        selectedTagName: 'react-tags__selected-tag-name',
+                        search: 'react-tags__search',
+                        searchWrapper: 'react-tags__search-wrapper',
+                        searchInput: 'react-tags__search-input',
+                        suggestions: 'react-tags__suggestions',
+                        suggestionActive: 'is-active',
+                        suggestionDisabled: 'is-disabled'
+                    }} similarImage
+                /></div>}
+        </Card.Body>
+    </Card>
+</div >
+
