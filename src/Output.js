@@ -71,19 +71,21 @@ export default class TaggedItems extends Component {
 
   }
   render() {
-    let currentRid = this.props.currentId;
+    let currentRid = this.props.selectedTag['@rid'];
     let images = this.state.images;
 
     if (!this.state.tagList) return (<p>Loading Data</p>);
-    let selectedTag = this.state.tagList.filter(e => {
-      // console.log(this.props.currentId);
-      if (e['@rid'] === this.props.currentId) return e
-    })[0];
+    let selectedTag = this.props.selectedTag;
+
+    let tagged = images.filter(e => {
+      if (e.tags && e.tags.indexOf(currentRid) > -1) return e
+    });
+
     return (<div id="preview" className="customerdetails">
       <Card bsStyle="info" className="centeralign">
         <Card.Header>
           <h3><center><b>Preview</b></center></h3>
-          <Card.Title componentClass="h3"><b>Tag Name:</b> <div className="badge primary">{selectedTag.name}&nbsp;</div>  <b>Description:</b>{selectedTag.description}</Card.Title>
+          <Card.Title ><b>Tag Name:</b> <div className="badge primary">{selectedTag.name}&nbsp;</div>  <b>Description:</b>{selectedTag.description}</Card.Title>
           {/* <b>ParentTags:</b> {selectedTag.parenTagstHirearchy.map(tag => {
             return (tag === "" ? "" : <div className="badge primary">{tag}&nbsp;</div>);
           })}
@@ -99,10 +101,17 @@ export default class TaggedItems extends Component {
 
         <Card.Body>
           <br />
-          {images.map((img, index) => {
+          {tagged.map((img, index) => {
             return (
               <Card style={{ width: '50%', float: 'left' }}>
-                <Card.Img variant="top" src={'./images/' + img.src} />
+                {/* <img src={'./images/' + img.path} onError={(e) => {
+                  e.target.onerror = null; e.target.src = "https://via.placeholder.com/600x200.png?text=..."
+                }} /> */}
+
+                <Card.Img variant="top" src={'./images/' + img.src}
+                  onError={(e) => {
+                    e.target.onerror = null; e.target.src = "https://via.placeholder.com/600x200.png?text=..."
+                  }} />
                 <Card.Body>
                   <Card.Title>{img.title}</Card.Title>
                   <Card.Text>{img.description}</Card.Text>

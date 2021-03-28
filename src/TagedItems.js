@@ -106,25 +106,18 @@ export default class TaggedItems extends Component {
       if (currentImageTagIds.indexOf(e['@rid']) > -1) return e
     });
 
-    let similarImageIds = currentImage.in_Similar.delegate.entries ? currentImage.in_Similar.delegate.entries : []; //["#38:0", "#38:1", "#38:2"]
+    //TODO:similar Tags
+    // let similarImageIds = currentImage.in_Similar.delegate.entries ? currentImage.in_Similar.delegate.entries : []; //["#38:0", "#38:1", "#38:2"]
+    // let similarImage = images.filter(e => {
+    //   // console.log(similarImageIds, e['@rid'], e.name);
+    //   if (similarImageIds.indexOf(e['@rid']) > -1) return e
+    // });
+    // let similarImageTags = this.state.similarImageTags ? this.state.image.similarImageTags :
+    //   tags.filter(e => {
+    //     if (similarImageIds.indexOf(e['@rid']) > -1) return e
+    //   });
 
-    let similarImage = images.filter(e => {
-      // console.log(similarImageIds, e['@rid'], e.name);
-      if (similarImageIds.indexOf(e['@rid']) > -1) return e
-    });
-
-
-    let similarImageTags = this.state.similarImageTags ? this.state.image.similarImageTags :
-      tags.filter(e => {
-        if (similarImageIds.indexOf(e['@rid']) > -1) return e
-      });
-
-    // if (!this.state.tagList) return (<p>Loading Data</p>);
-    // let selectedTag = this.state.tags.filter(e => {
-    //   console.log('.......', e, e['@rid'], currentRid);
-    //   if (e['@rid'] === currentRid) return e;
-    // })[0];
-    console.log('From renderer selectedTag', selectedTag, currentImage, currentImageTags, similarImage);
+    console.log('From renderer selectedTag', selectedTag, currentImage, currentImageTags);
     return (
       <div>
         <div id="editTags">

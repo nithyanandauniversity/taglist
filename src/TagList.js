@@ -128,7 +128,7 @@ export default class TagsList extends Component {
 
           <div className="col-md-8">
             <TaggedItems selectedTag={this.state.selectedTag} />
-            {/* <Output selectedTag={this.state.selectedTag} /> */}
+            <Output selectedTag={this.state.selectedTag} />
           </div>
           <div className="col-md-2">
             <h3>All Tags</h3>
