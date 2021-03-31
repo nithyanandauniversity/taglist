@@ -34,8 +34,8 @@ export default class TagsList extends Component {
   getTagListData() {
     //assets/tags/taglist.json
     let tagsData = [];
-    axios.get('/assets/tags/tags.json').then(response => {
-      axios.get('/assets/tags/images.json').then(images => {
+    axios.get('assets/tags/tags.json').then(response => {
+      axios.get('assets/tags/images.json').then(images => {
         this.setState({
           tagList: response.data, searchResult: response.data,
           suggestions: response.data, images: images.data, selectedTag: response.data[5], tags: [response.data[5], response.data[6], response.data[7],],
