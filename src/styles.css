@@ -22,6 +22,11 @@
  *     </div>
  *   </div>
  */
+
+ .parentDiv {
+  height: 800px;
+  overflow-y: scroll;
+}
  .react-tags {
     position: relative;
     padding: 6px 0 0 6px;

@@ -1,0 +1,434 @@
+[
+    {
+        "@class": "Tag",
+        "name": "discourse",
+        "@rid": "#22:0",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Satsang",
+        "@rid": "#22:1",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Ashram",
+        "@rid": "#22:2",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "2006",
+        "@rid": "#22:3",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Meditation Camp",
+        "@rid": "#22:4",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Interview-TV",
+        "@rid": "#22:5",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Time",
+        "@rid": "#22:6",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Rishikesh",
+        "@rid": "#22:7",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Healers",
+        "@rid": "#22:8",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Darshan-special",
+        "@rid": "#22:9",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "BSP",
+        "@rid": "#22:10",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Interview-Radio",
+        "@rid": "#22:11",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Pathanjali Yoga sutras",
+        "@rid": "#22:12",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Abhishekam",
+        "@rid": "#22:13",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Nithya",
+        "@rid": "#22:14",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Paramahamsa",
+        "@rid": "#22:15",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Festival",
+        "@rid": "#22:16",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Alchemy",
+        "@rid": "#22:17",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "HealingSession",
+        "@rid": "#23:0",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Ananda Sabha",
+        "@rid": "#23:1",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "NSP",
+        "@rid": "#23:2",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Yatra",
+        "@rid": "#23:3",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Meeting",
+        "@rid": "#23:4",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Satsang-Gita-Mahabharat",
+        "@rid": "#23:5",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Kaya Kalpa",
+        "@rid": "#23:6",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "proclamation message",
+        "@rid": "#23:7",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Pada Puja",
+        "@rid": "#23:8",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Swamiji's 29th Jayanti",
+        "@rid": "#23:9",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Conscious Birth",
+        "@rid": "#23:10",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "world tour",
+        "@rid": "#23:11",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Satsang-YogaSutras",
+        "@rid": "#23:12",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Karseva Banyan",
+        "@rid": "#23:13",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Eternal Bliss",
+        "@rid": "#23:14",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Inner World",
+        "@rid": "#23:15",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Departure",
+        "@rid": "#23:16",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "QA",
+        "@rid": "#23:17",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Darshan-general",
+        "@rid": "#24:0",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Special Photo Collections",
+        "@rid": "#24:1",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Visit",
+        "@rid": "#24:2",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "the group reached Triveni Sangam of Allahabad",
+        "@rid": "#24:3",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Shiva Sutras",
+        "@rid": "#24:4",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Inauguration-Temple-or-branch",
+        "@rid": "#24:5",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Flyers",
+        "@rid": "#24:6",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Padapuja",
+        "@rid": "#24:7",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Deeksha-Mediums",
+        "@rid": "#24:8",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Training-Teacher",
+        "@rid": "#24:9",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Important Documents",
+        "@rid": "#24:10",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Shivaratri",
+        "@rid": "#24:11",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Disaster Relief",
+        "@rid": "#24:12",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "aarathi",
+        "@rid": "#24:13",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Himalaya Yatra",
+        "@rid": "#24:14",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Ananda Brahmotsav",
+        "@rid": "#24:15",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Mahamastakabhisheka celebrations of Lord Bahubali",
+        "@rid": "#24:16",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "ASP",
+        "@rid": "#24:17",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "2005",
+        "@rid": "#25:0",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Ashtavakra Gita",
+        "@rid": "#25:1",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Healers Initiation",
+        "@rid": "#25:2",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Auto Uploaded Images",
+        "@rid": "#25:3",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Meditation",
+        "@rid": "#25:4",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Bhagavad Gita",
+        "@rid": "#25:5",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Flyers & Banners",
+        "@rid": "#25:6",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Jayanti",
+        "@rid": "#25:7",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "DSP",
+        "@rid": "#25:8",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Conference",
+        "@rid": "#25:9",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Deeksha",
+        "@rid": "#25:10",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Ordaining-Acharyas",
+        "@rid": "#25:11",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Alankar",
+        "@rid": "#25:12",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Engrams",
+        "@rid": "#25:13",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Satsang-ShivaSutras",
+        "@rid": "#25:14",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Homa",
+        "@rid": "#25:15",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Intuition",
+        "@rid": "#25:16",
+        "@version": 1
+    },
+    {
+        "@class": "Tag",
+        "name": "Devalaya",
+        "@rid": "#25:17",
+        "@version": 1
+    }
+]

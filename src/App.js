@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import './App.css';
 import TagsList from './TagList'
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
-import Output from './Output'
+import Preview from './Preview'
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 class App extends Component {
@@ -23,7 +23,7 @@ class App extends Component {
           <Switch>
             {<Route exact path="/" render={() => (<Redirect to="/taglist" />)} />}
             <Route exact path='/taglist' component={TagsList} />
-            <Route exact path='/output' component={Output} />
+            <Route exact path='/output' component={Preview} />
           </Switch>
         </div>
       </Router>

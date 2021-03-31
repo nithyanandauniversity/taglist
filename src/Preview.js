@@ -10,25 +10,28 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import './styles.css'
+import Spinner from 'react-bootstrap/Spinner';
+import Badge from 'react-bootstrap/Badge';
 
 //This Component is a child Component of Customers Component
-export default class TaggedItems extends Component {
+export default class Preview extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
+      isLoading: false
     }
   }
 
   getTagListData() {
     //assets/tags/taglist.json
     let tagsData = [];
-    axios.get('http://localhost:4000/tags').then(response => {
-      axios.get('http://localhost:4000/images').then(images => {
+    axios.get('/assets/tags/tags.json').then(response => {
+      axios.get('/assets/tags/images.json').then(images => {
         console.log('res', response.data, images.data);
         this.setState({
           tagList: response.data, searchResult: response.data,
-          suggestions: response.data, images: images.data
+          suggestions: response.data, images: images.data, isLoading: false
         })
       });
 
@@ -71,6 +74,33 @@ export default class TaggedItems extends Component {
 
   }
   render() {
+
+    if (!this.props.showPreview) return (<div></div>);
+    if (this.state.isLoading == true) {
+      return (<>
+        <Button variant="primary" disabled>
+          <Spinner
+            as="span"
+            animation="border"
+            size="sm"
+            role="status"
+            aria-hidden="true"
+          />
+          <span className="sr-only">Loading...</span>
+        </Button>{' '}
+        <Button variant="primary" disabled>
+          <Spinner
+            as="span"
+            animation="grow"
+            size="sm"
+            role="status"
+            aria-hidden="true"
+          />
+      Loading...
+    </Button>
+      </>);
+
+    }
     let currentRid = this.props.selectedTag['@rid'];
     let images = this.state.images;
 
@@ -84,7 +114,7 @@ export default class TaggedItems extends Component {
     return (<div id="preview" className="customerdetails">
       <Card bsStyle="info" className="centeralign">
         <Card.Header>
-          <h3><center><b>Preview</b></center></h3>
+          <center><Badge><h3><b>Preview</b></h3></Badge></center>
           <Card.Title ><b>Tag Name:</b> <div className="badge primary">{selectedTag.name}&nbsp;</div>  <b>Description:</b>{selectedTag.description}</Card.Title>
           {/* <b>ParentTags:</b> {selectedTag.parenTagstHirearchy.map(tag => {
             return (tag === "" ? "" : <div className="badge primary">{tag}&nbsp;</div>);
@@ -108,10 +138,7 @@ export default class TaggedItems extends Component {
                   e.target.onerror = null; e.target.src = "https://via.placeholder.com/600x200.png?text=..."
                 }} /> */}
 
-                <Card.Img variant="top" src={'./images/' + img.src}
-                  onError={(e) => {
-                    e.target.onerror = null; e.target.src = "https://via.placeholder.com/600x200.png?text=..."
-                  }} />
+                <Card.Img variant="top" src={"http://drive.google.com/thumbnail?id=" + img.id} />
                 <Card.Body>
                   <Card.Title>{img.title}</Card.Title>
                   <Card.Text>{img.description}</Card.Text>

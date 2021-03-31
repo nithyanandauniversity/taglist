@@ -5,15 +5,21 @@ import axios from 'axios'
 import ReactTags from 'react-tag-autocomplete'
 import logo from './logo.svg';
 import './styles.css'
-import Output from './Output';
+import Preview from './Preview';
 import Card from 'react-bootstrap/Card';
+import Spinner from 'react-bootstrap/Spinner';
+import Badge from 'react-bootstrap/Badge';
+
+
 
 export default class TagsList extends Component {
   constructor(props) {
     super(props)
     this.state = {
       tags: [],
-      searchResult: []
+      searchResult: [],
+      isLoading: true,
+      showPreview: false
     }
     this.reactTags = React.createRef()
   }
@@ -28,14 +34,14 @@ export default class TagsList extends Component {
   getTagListData() {
     //assets/tags/taglist.json
     let tagsData = [];
-    axios.get('http://localhost:4000/tags').then(response => {
-      axios.get('http://localhost:4000/images').then(images => {
+    axios.get('/assets/tags/tags.json').then(response => {
+      axios.get('/assets/tags/images.json').then(images => {
         this.setState({
           tagList: response.data, searchResult: response.data,
-          suggestions: response.data, images: images.data, selectedTag: response.data[0], tags: [response.data[0], response.data[1], response.data[2]]
+          suggestions: response.data, images: images.data, selectedTag: response.data[5], tags: [response.data[5], response.data[6], response.data[7],],
+          isLoading: false
         })
       });
-
     })
   };
 
@@ -60,12 +66,34 @@ export default class TagsList extends Component {
 
 
   render() {
-    if (!this.state.tagList)
-      return (<p>Loading data</p>)
+    if (!this.state.tagList || this.state.isLoading)
+      return (
+        <>
+          <Button variant="primary" disabled>
+            <Spinner
+              as="span"
+              animation="border"
+              size="sm"
+              role="status"
+              aria-hidden="true"
+            />
+            <span className="sr-only">Loading...</span>
+          </Button>{' '}
+          <Button variant="primary" disabled>
+            <Spinner
+              as="span"
+              animation="grow"
+              size="sm"
+              role="status"
+              aria-hidden="true"
+            />
+        Loading...
+      </Button>
+        </>);
     return (
       <div>
         <header className="App-header">
-          <div><h1>Search and Tag Images</h1>
+          <div>
             <ReactTags
               ref={this.reactTags}
               tags={this.state.tags}
@@ -73,7 +101,7 @@ export default class TagsList extends Component {
               onDelete={this.onDelete.bind(this)}
               onAddition={this.onAddition.bind(this)}
               autoresize={false}
-              placeholderText={"Tag name to search..."}
+              placeholderText={"« searchTags"}
               minQueryLength={1}
               classNames={{
                 root: 'react-tags',
@@ -92,8 +120,8 @@ export default class TagsList extends Component {
         </header>
 
         <div className="row addmargin">
-          <div className="col-md-2 margin-top-0">
-            <h3>Serach Results</h3>
+          <div className="col-md-2 margin-top-0 parentDiv">
+            <Badge><h3>Serach Results</h3></Badge>
             {
               this.state.searchResult.length === 0 ? "no tags to show" :
                 //bsStyle="info"
@@ -114,7 +142,7 @@ export default class TagsList extends Component {
                   })} <br /> */}
 
 
-                      <Button onClick={() => {
+                      <Button variant="info" block size="lg" onClick={() => {
                         console.log('Current:', tag['@rid']);
                         this.setState({ selectedTag: tag });
                       }}>
@@ -127,11 +155,19 @@ export default class TagsList extends Component {
           </div>
 
           <div className="col-md-8">
+
             <TaggedItems selectedTag={this.state.selectedTag} />
-            <Output selectedTag={this.state.selectedTag} />
+            <Button variant="primary" block size="lg" onClick={() => {
+              this.setState({ showPreview: !this.state.showPreview });
+
+            }}>
+              {this.state.showPreview ? "Hide Preview" : "Show Preview"}
+
+            </Button>
+            <Preview selectedTag={this.state.selectedTag} showPreview={this.state.showPreview} />
           </div>
-          <div className="col-md-2">
-            <h3>All Tags</h3>
+          <div className="col-md-2 parentDiv">
+            <Badge><h3>All Tags</h3></Badge>
             {
               //bsStyle="info"
               this.state.tagList.map(tag => <Card key={tag['@rid']} className="centeralign">
@@ -145,7 +181,7 @@ export default class TagsList extends Component {
                     ChildTags: {tag.childTagsHirearchy.map(tag => {
                   return (tag === "" ? "" : <div className="badge primary">{tag}&nbsp;</div>);
                 })}<br /> */}
-                  <Button onClick={() => {
+                  <Button variant="info" block size="lg" onClick={() => {
                     console.log('CurrentTag:', tag['@rid']);
                     this.setState({ selectedTag: tag });
                   }}>

@@ -6,22 +6,27 @@ import ReactTags from 'react-tag-autocomplete'
 import { HashLink as Link } from 'react-router-hash-link';
 import './styles.css'
 import Card from 'react-bootstrap/Card';
+import Spinner from 'react-bootstrap/Spinner';
+import Button from 'react-bootstrap/Button';
+import Badge from 'react-bootstrap/Badge';
+
 
 export default class TaggedItems extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      tags: []
+      tags: [],
+      isLoading: true
     }
     this.reactTags = React.createRef();
-
   }
+
   getTagListData() {
     //assets/tags/taglist.json
     let tagsData = [];
-    axios.get('http://localhost:4000/tags').then(response => {
-      axios.get('http://localhost:4000/images').then(images => {
+    axios.get('/assets/tags/tags.json').then(response => {
+      axios.get('/assets/tags/images.json').then(images => {
         let currentRid = this.props.selectedTag['@rid'];
         let tagged = images.data.filter(e => {
           if (e.tags && e.tags.indexOf(currentRid) > -1) return e
@@ -32,14 +37,11 @@ export default class TaggedItems extends Component {
         let currentImageTags = response.data.filter(e => {
           if (currentImageTagIds.indexOf(e['@rid']) > -1) return e
         });
-
-        console.log('inTagList ::::', currentImage, currentImageTagIds, currentImageTags);
-
-
+        // console.log('inTagList ::::', currentImage, currentImageTagIds, currentImageTags);
         this.setState({
           tagList: response.data, searchResult: response.data,
           suggestions: response.data, tags: currentImageTags, tagged: tagged,
-          currentImage: currentImage, images: images.data
+          currentImage: currentImage, images: images.data, isLoading: false
         })
       });
     })
@@ -52,19 +54,19 @@ export default class TaggedItems extends Component {
   onDelete(i) {
     const tags = this.state.tags.slice(0)
     tags.splice(i, 1)
-    this.setState({ tags })
+    this.setState({ tags, tagModified: true })
     // let selectedTag = this.state.tagList.filter(e => { if (e.id === currentRid) return e })[0];
 
   }
 
   onAddition(tag) {
     const tags = [].concat(this.state.tags, tag)
-    this.setState({ tags })
+    this.setState({ tags, tagModified: true })
   }
 
 
   handleInputChange = () => {
-    return '';
+    return;
   }
 
 
@@ -86,7 +88,29 @@ export default class TaggedItems extends Component {
 
 
   render() {
-    if (!this.state.tagList || !this.state.images) return (<p>Loading Data</p>);
+    if (this.state.isLoading) return (
+      <>
+        <Button variant="primary" disabled>
+          <Spinner
+            as="span"
+            animation="border"
+            size="sm"
+            role="status"
+            aria-hidden="true"
+          />
+          <span className="sr-only">Loading...</span>
+        </Button>{' '}
+        <Button variant="primary" disabled>
+          <Spinner
+            as="span"
+            animation="grow"
+            size="sm"
+            role="status"
+            aria-hidden="true"
+          />
+        Loading...
+      </Button>
+      </>);
 
     let currentRid = this.props.selectedTag['@rid'];
     let selectedTag = this.props.selectedTag;
@@ -106,6 +130,25 @@ export default class TaggedItems extends Component {
       if (currentImageTagIds.indexOf(e['@rid']) > -1) return e
     });
 
+    // if (!arraysEqual(currentImageTags, this.state.tags)) {
+    //   this.setState({ tags: currentImageTags, tagModified: false })
+    // }
+    function arraysEqual(a, b) {
+      if (a === b) return true;
+      if (a == null || b == null) return false;
+      if (a.length !== b.length) return false;
+
+      // If you don't care about the order of the elements inside
+      // the array, you should sort both arrays here.
+      // Please note that calling sort on an array will modify that array.
+      // you might want to clone your array first.
+
+      for (var i = 0; i < a.length; ++i) {
+        if (a[i] !== b[i]) return false;
+      }
+      return true;
+    }
+
     //TODO:similar Tags
     // let similarImageIds = currentImage.in_Similar.delegate.entries ? currentImage.in_Similar.delegate.entries : []; //["#38:0", "#38:1", "#38:2"]
     // let similarImage = images.filter(e => {
@@ -123,7 +166,7 @@ export default class TaggedItems extends Component {
         <div id="editTags">
           <Card className="centeralign">
             <Card.Header>
-              <h3><center><b>Edit Tags</b></center></h3>
+              <center><Badge><h3><b>Edit Tags</b></h3></Badge></center>
               <Card.Title><b>Tag Name:</b> <div className="badge primary">{selectedTag.name}&nbsp;</div>  <b>Description:</b>{selectedTag.description}</Card.Title>
               {/* <b>ParentTags:</b> {selectedTag.parentTags.map(tag => {
             return (tag === "" ? "" : <div className="badge primary">{tag}&nbsp;</div>);
@@ -136,7 +179,7 @@ export default class TaggedItems extends Component {
             </Card.Header>
             <Card.Body>
               <br />
-              <Carousel onChange={(index, ele) => this.loadImageTags(index, ele)} dynamicHeight={true}>
+              <Carousel onChange={(index, ele) => this.loadImageTags(index, ele)} dynamicHeight={true} showIndicators={false}	>
                 {tagged.map(img => {
                   return (<div key={img['@rid']}>
                     <form style={{ 'textAlign': 'left' }}>
@@ -151,9 +194,7 @@ export default class TaggedItems extends Component {
                     </form>
 
                     File:{img.name}, Path: {img.path}, Title: {img.title}, Dimension:{img.width}x{img.height}
-                    <img src={'./images/' + img.path} onError={(e) => {
-                      e.target.onerror = null; e.target.src = "https://via.placeholder.com/600x200.png?text=..."
-                    }} />
+                    <img src={"http://drive.google.com/thumbnail?id=" + img.id} onError={(e) => { e.target.onerror = null; e.target.src = "https://via.placeholder.com/600x200.png?text=..." }} />
                     <br />
 
                   </div>);
