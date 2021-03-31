@@ -25,8 +25,8 @@ export default class TaggedItems extends Component {
   getTagListData() {
     //assets/tags/taglist.json
     let tagsData = [];
-    axios.get('taglist/assets/tags/tags.json').then(response => {
-      axios.get('taglist/assets/tags/images.json').then(images => {
+    axios.get('/taglist/assets/tags/tags.json').then(response => {
+      axios.get('/taglist/assets/tags/images.json').then(images => {
         let currentRid = this.props.selectedTag['@rid'];
         let tagged = images.data.filter(e => {
           if (e.tags && e.tags.indexOf(currentRid) > -1) return e
