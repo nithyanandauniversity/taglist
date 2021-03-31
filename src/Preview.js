@@ -26,8 +26,8 @@ export default class Preview extends Component {
   getTagListData() {
     //assets/tags/taglist.json
     let tagsData = [];
-    axios.get('assets/tags/tags.json').then(response => {
-      axios.get('assets/tags/images.json').then(images => {
+    axios.get('taglist/assets/tags/tags.json').then(response => {
+      axios.get('taglist/assets/tags/images.json').then(images => {
         console.log('res', response.data, images.data);
         this.setState({
           tagList: response.data, searchResult: response.data,
