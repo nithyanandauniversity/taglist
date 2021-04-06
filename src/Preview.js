@@ -22,20 +22,32 @@ export default class Preview extends Component {
       isLoading: false
     }
   }
+  tagJsonPath = '/taglist/assets/tags/tags.json'
+  imagesJsonPath = '/taglist/assets/tags/images.json'
 
   getTagListData() {
     //assets/tags/taglist.json
-    let tagsData = [];
-    axios.get('/taglist/assets/tags/tags.json').then(response => {
-      axios.get('/taglist/assets/tags/images.json').then(images => {
-        console.log('res', response.data, images.data);
-        this.setState({
-          tagList: response.data, searchResult: response.data,
-          suggestions: response.data, images: images.data, isLoading: false
-        })
-      });
+    let images = JSON.parse(localStorage.getItem('images'));
+    let tags = JSON.parse(localStorage.getItem('tags'));
 
-    })
+    if (images && tags) {
+      this.setState({
+        tagList: tags, searchResult: tags,
+        suggestions: tags, images: images, isLoading: false
+      })
+    } else {
+      axios.get(this.tagJsonPath).then(response => {
+        axios.get(this.imagesJsonPath).then(images => {
+          localStorage.setItem('images', JSON.stringify(images.data));
+          localStorage.setItem('tags', JSON.stringify(response.data));
+          this.setState({
+            tagList: response.data, searchResult: response.data,
+            suggestions: response.data, images: images.data, isLoading: false
+          })
+        });
+
+      })
+    }
   }
 
   //function which is called the first time the component loads

@@ -13,77 +13,146 @@ import Badge from 'react-bootstrap/Badge';
 
 export default class TaggedItems extends Component {
 
+
   constructor(props) {
     super(props);
     this.state = {
       tags: [],
-      isLoading: true
+      isLoading: true,
+      tagModified: false,
+      title: '',
+      description: ''
     }
     this.reactTags = React.createRef();
   }
 
+  tagJsonPath = '/taglist/assets/tags/tags.json'
+  imagesJsonPath = '/taglist/assets/tags/images.json'
+
   getTagListData() {
     //assets/tags/taglist.json
-    let tagsData = [];
-    axios.get('/taglist/assets/tags/tags.json').then(response => {
-      axios.get('/taglist/assets/tags/images.json').then(images => {
-        let currentRid = this.props.selectedTag['@rid'];
-        let tagged = images.data.filter(e => {
-          if (e.tags && e.tags.indexOf(currentRid) > -1) return e
-        });
+    let images = JSON.parse(localStorage.getItem('images'));
+    let tags = JSON.parse(localStorage.getItem('tags'));
 
-        let currentImage = tagged[0] ? tagged[0] : [];
-        let currentImageTagIds = currentImage.tags ? currentImage.tags : [];
-        let currentImageTags = response.data.filter(e => {
-          if (currentImageTagIds.indexOf(e['@rid']) > -1) return e
-        });
-        // console.log('inTagList ::::', currentImage, currentImageTagIds, currentImageTags);
-        this.setState({
-          tagList: response.data, searchResult: response.data,
-          suggestions: response.data, tags: currentImageTags, tagged: tagged,
-          currentImage: currentImage, images: images.data, isLoading: false
-        })
+    if (images && tags) {
+      let currentRid = this.props.selectedTag['@rid'];
+      let tagged = images.filter(e => {
+        if (e.tags && e.tags.indexOf(currentRid) > -1) return e
       });
-    })
+
+      let currentImage = tagged[0] ? tagged[0] : [];
+      let currentImageTagIds = currentImage.tags ? currentImage.tags : [];
+      let currentImageTags = tags.filter(e => {
+        if (currentImageTagIds.indexOf(e['@rid']) > -1) return e
+      });
+      this.setState({
+        tagList: tags, searchResult: tags,
+        suggestions: tags, tags: currentImageTags, tagged: tagged,
+        currentImage: currentImage, images: images, isLoading: false,
+        title: currentImage.title, description: currentImage.description
+      })
+    } else {
+      axios.get(this.tagJsonPath).then(response => {
+        axios.get(this.imagesJsonPath).then(images => {
+          let currentRid = this.props.selectedTag['@rid'];
+          let tagged = images.data.filter(e => {
+            if (e.tags && e.tags.indexOf(currentRid) > -1) return e
+          });
+
+          let currentImage = tagged[0] ? tagged[0] : [];
+          let currentImageTagIds = currentImage.tags ? currentImage.tags : [];
+          let currentImageTags = response.data.filter(e => {
+            if (currentImageTagIds.indexOf(e['@rid']) > -1) return e
+          });
+          localStorage.setItem('images', JSON.stringify(images.data));
+          localStorage.setItem('tags', JSON.stringify(response.data));
+          // console.log('inTagList ::::', currentImage, currentImageTagIds, currentImageTags);
+          this.setState({
+            tagList: response.data, searchResult: response.data,
+            suggestions: response.data, tags: currentImageTags, tagged: tagged,
+            currentImage: currentImage, images: images.data, isLoading: false,
+            title: currentImage.title, description: currentImage.description
+          })
+        });
+      })
+    }
   };
   //function which is called the first time the component loads
   componentDidMount() {
     this.getTagListData();
   }
 
+  updateJSON() {
+    this.state.currentImage.updated = true;
+    this.state.images.map(el => {
+      if (el.updated) {
+        console.log('modified :', el);
+      }
+    });
+  }
+
   onDelete(i) {
     const tags = this.state.tags.slice(0)
     tags.splice(i, 1)
+    const modifiedTags = tags.map(el => {
+      return el['@rid'];
+    });
+    console.log("modified Tag" + modifiedTags);
+    this.state.currentImage.tags = modifiedTags;
+    this.updateJSON();
     this.setState({ tags, tagModified: true })
     // let selectedTag = this.state.tagList.filter(e => { if (e.id === currentRid) return e })[0];
-
+    // this.updateJSON();
   }
+
 
   onAddition(tag) {
     const tags = [].concat(this.state.tags, tag)
+    const modifiedTags = tags.map(el => {
+      return el['@rid'];
+    });
+    console.log("modified Tag" + modifiedTags);
+    this.state.currentImage.tags = modifiedTags;
+    this.updateJSON();
     this.setState({ tags, tagModified: true })
+    // this.updateJSON();
   }
 
+  handleDescrptionChange = (e) => {
+    console.log('in input change', e.target.value);
+    this.setState({ description: e.target.value })
+    this.state.currentImage.description = e.target.value;
+    this.updateJSON();
+    return e.target.value;
 
-  handleInputChange = () => {
-    return;
   }
 
+  handleTitleChange = (e) => {
+    console.log('in input change', e.target.value);
+    this.setState({ title: e.target.value });
+    this.state.currentImage.title = e.target.value;
+    this.updateJSON();
+    return e.target.value;
+  }
 
   loadImageTags = (index, ele) => {
-    console.log('this.state.tagged[index]', this.state.tagged[index]);
-    let currentImage = this.state.tagged[index];
+    let currentRid = this.props.selectedTag['@rid'];
+    let images = this.state.images;
+    // let currentRid = selectedTag; //this.props.selectedTag['@rid'];
+    let tagged = images.filter(e => {
+      if (e.tags && e.tags.indexOf(currentRid) > -1) return e
+    });
+    let currentImage = tagged[index];
     // let imageTags = currentImage.tags ? currentImage.tags : [];
     let currentImageTagIds = currentImage.tags ? currentImage.tags : [];
     // console.log('imageTags', imageTags);
-
     let tags = this.state.suggestions; // all tags
     let currentImageTags = tags.filter(e => {
       if (currentImageTagIds.indexOf(e['@rid']) > -1) return e
     });
-    console.log('Slected Image', currentImage, currentImageTagIds, currentImageTags)
+    console.log('Selected Image, tag Ids, tags', currentImage, currentImageTagIds, currentImageTags)
 
-    return this.setState({ tags: currentImageTags, currentImage: currentImage });
+    return this.setState({ tags: currentImageTags, currentImage: currentImage, title: currentImage.title, description: currentImage.description });
   }
 
 
@@ -115,24 +184,27 @@ export default class TaggedItems extends Component {
     let currentRid = this.props.selectedTag['@rid'];
     let selectedTag = this.props.selectedTag;
 
-
     let tags = this.state.suggestions;
     let images = this.state.images;
 
     // let currentRid = selectedTag; //this.props.selectedTag['@rid'];
+    console.log('images   ', images)
     let tagged = images.filter(e => {
       if (e.tags && e.tags.indexOf(currentRid) > -1) return e
     });
 
-    let currentImage = tagged[0] ? tagged[0] : [];
-    let currentImageTagIds = currentImage.tags ? currentImage.tags : [];
-    let currentImageTags = tags.filter(e => {
-      if (currentImageTagIds.indexOf(e['@rid']) > -1) return e
-    });
-
-    // if (!arraysEqual(currentImageTags, this.state.tags)) {
-    //   this.setState({ tags: currentImageTags, tagModified: false })
-    // }
+    //no change if tag is not modified
+    if (!this.state.tagModified) {
+      let currentImage = tagged[0] ? tagged[0] : [];
+      let currentImageTagIds = currentImage.tags ? currentImage.tags : [];
+      let currentImageTags = tags.filter(e => {
+        if (currentImageTagIds.indexOf(e['@rid']) > -1) return e
+      });
+      // current image tags is not equal to currentTags, means a diffrent Tag is clicked?
+      if (!arraysEqual(currentImageTags, this.state.tags)) {
+        this.setState({ tags: currentImageTags, tagModified: false, title: currentImage.title, description: currentImage.description })
+      }
+    }
     function arraysEqual(a, b) {
       if (a === b) return true;
       if (a == null || b == null) return false;
@@ -160,7 +232,7 @@ export default class TaggedItems extends Component {
     //     if (similarImageIds.indexOf(e['@rid']) > -1) return e
     //   });
 
-    console.log('From renderer selectedTag', selectedTag, currentImage, currentImageTags);
+    // console.log('From renderer selectedTag', selectedTag, currentImage, currentImageTags);
     return (
       <div>
         <div id="editTags">
@@ -185,12 +257,12 @@ export default class TaggedItems extends Component {
                     <form style={{ 'textAlign': 'left' }}>
                       <label>Title: </label><input className="form-control" name="title"
                         type="text"
-                        value={img.title}
-                        onChange={this.handleInputChange} />
+                        value={this.state.title}
+                        onChange={this.handleTitleChange} />
                       <label>Description: </label><input className="form-control" name="description"
                         type="text"
-                        value={img.description}
-                        onChange={this.handleInputChange} />
+                        value={this.state.description}
+                        onChange={this.handleDescrptionChange} />
                     </form>
 
                     File:{img.name}, Path: {img.path}, Title: {img.title}, Dimension:{img.width}x{img.height}

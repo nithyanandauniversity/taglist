@@ -30,21 +30,36 @@ export default class TagsList extends Component {
 
   }
 
+  tagJsonPath = '/taglist/assets/tags/tags.json'
+  imagesJsonPath = '/taglist/assets/tags/images.json'
+
   //Function to get the tag Data from json
   getTagListData() {
-    //assets/tags/taglist.json
-    let tagsData = [];
-    axios.get('/taglist/assets/tags/tags.json').then(response => {
-      axios.get('/taglist/assets/tags/images.json').then(images => {
-        this.setState({
-          tagList: response.data, searchResult: response.data,
-          suggestions: response.data, images: images.data, selectedTag: response.data[5], tags: [response.data[5], response.data[6], response.data[7],],
-          isLoading: false
-        })
-      });
-    })
+    // /assets/tags/taglist.json
+    let images = JSON.parse(localStorage.getItem('images'));
+    let tags = JSON.parse(localStorage.getItem('tags'));
+    console.log('images and tags', images, tags);
+    if (images && tags) {
+      console.log('ig...');
+      this.setState({
+        tagList: tags, searchResult: tags,
+        suggestions: tags, images: images, selectedTag: tags[0], tags: [tags[0], tags[1], tags[2]],
+        isLoading: false
+      })
+    } else {
+      axios.get(this.tagJsonPath).then(response => {
+        axios.get(this.imagesJsonPath).then(images => {
+          localStorage.setItem('images', JSON.stringify(images.data));
+          localStorage.setItem('tags', JSON.stringify(response.data));
+          this.setState({
+            tagList: response.data, searchResult: response.data,
+            suggestions: response.data, images: images.data, selectedTag: response.data[5], tags: [response.data[5], response.data[6], response.data[7],],
+            isLoading: false
+          })
+        });
+      })
+    }
   };
-
   onDelete(i) {
     const tags = this.state.tags.slice(0)
     tags.splice(i, 1)
