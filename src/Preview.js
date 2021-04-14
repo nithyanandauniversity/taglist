@@ -1,4 +1,4 @@
-import React, { Image, Component } from 'react';
+import React, { Image, Component, props } from 'react';
 import axios from 'axios'
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from 'react-responsive-carousel';
@@ -12,154 +12,173 @@ import Container from 'react-bootstrap/Container';
 import './styles.css'
 import Spinner from 'react-bootstrap/Spinner';
 import Badge from 'react-bootstrap/Badge';
+import pako from 'pako';
 
 //This Component is a child Component of Customers Component
-export default class Preview extends Component {
+// export default class Preview1 extends Component {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      isLoading: false
-    }
-  }
-  tagJsonPath = '/taglist/assets/tags/tags.json'
-  imagesJsonPath = '/taglist/assets/tags/images.json'
+//   constructor(props) {
+//     super(props);
+//     this.state = {
+//       isLoading: false,
+//       showPreview: false
+//     }
+//   }
+//   tagJsonPath = '/assets/tags/tags.json'
+//   imagesJsonPath = '/assets/tags/images.json'
 
-  getTagListData() {
-    //assets/tags/taglist.json
-    let images = JSON.parse(localStorage.getItem('images'));
-    let tags = JSON.parse(localStorage.getItem('tags'));
+//   getTagListData() {
+//     //assets/tags/taglist.json
+//     let images = null; //JSON.parse(localStorage.getItem('images'));
+//     let tags = null; //JSON.parse(localStorage.getItem('tags'));
 
-    if (images && tags) {
-      this.setState({
-        tagList: tags, searchResult: tags,
-        suggestions: tags, images: images, isLoading: false
-      })
-    } else {
-      axios.get(this.tagJsonPath).then(response => {
-        axios.get(this.imagesJsonPath).then(images => {
-          localStorage.setItem('images', JSON.stringify(images.data));
-          localStorage.setItem('tags', JSON.stringify(response.data));
-          this.setState({
-            tagList: response.data, searchResult: response.data,
-            suggestions: response.data, images: images.data, isLoading: false
-          })
-        });
+//     if (images && tags) {
+//       this.setState({
+//         tagList: tags, searchResult: tags,
+//         suggestions: tags, images: images, isLoading: false
+//       })
+//     } else {
+//       axios.get(this.tagJsonPath).then(response => {
+//         axios.get(this.imagesJsonPath).then(images => {
+//           // const compressedImages = pako.deflate(JSON.stringify(images.data));
+//           // const compressedTags = pako.deflate(JSON.stringify(response.data));
+//           // localStorage.setItem('images', JSON.stringify(images.data));
+//           // localStorage.setItem('tags', JSON.stringify(response.data));
 
-      })
-    }
-  }
+//           this.setState({
+//             tagList: response.data, searchResult: response.data,
+//             suggestions: response.data, images: images.data, isLoading: false
+//           })
+//         });
 
-  //function which is called the first time the component loads
-  componentDidMount() {
-    this.getTagListData();
-  }
+//       })
+//     }
+//   }
 
-  //Function which is called whenver the component is updated
-  componentDidUpdate(prevProps) {
+//   //function which is called the first time the component loads
+//   componentDidMount() {
+//     this.getTagListData();
+//   }
 
-    //get Customer Details only if props has changed
-    if (this.props.val !== prevProps.val) {
-      this.getTagDetails(this.props.val)
-    }
-  }
+//   //Function which is called whenver the component is updated
+//   componentDidUpdate(prevProps) {
 
-  onDelete(i) {
-    const tags = this.state.tags.slice(0)
-    tags.splice(i, 1)
-    this.setState({ tags })
-  }
+//     //get Customer Details only if props has changed
+//     if (this.props.val !== prevProps.val) {
+//       this.getTagDetails(this.props.val)
+//     }
+//   }
 
-  onAddition(tag) {
-    const tags = [].concat(this.state.tags, tag)
-    this.setState({ tags })
-  }
+//   onDelete(i) {
+//     const tags = this.state.tags.slice(0)
+//     tags.splice(i, 1)
+//     this.setState({ tags })
+//   }
 
-  //Function to Load the customerdetails data from json.
-  // getTagDetails(id) {
-  //   axios.get('assets/tags/tag' + id + '.json').then(response => {
-  //     this.setState({ customerDetails: response })
-  //   })
-  // };
+//   onAddition(tag) {
+//     const tags = [].concat(this.state.tags, tag)
+//     this.setState({ tags })
+//   }
 
-  handleInputChange = (img) => {
+//   //Function to Load the customerdetails data from json.
+//   // getTagDetails(id) {
+//   //   axios.get('assets/tags/tag' + id + '.json').then(response => {
+//   //     this.setState({ customerDetails: response })
+//   //   })
+//   // };
 
-  }
-  render() {
+//   handleInputChange = (img) => {
 
-    if (!this.props.showPreview) return (<div></div>);
-    if (this.state.isLoading == true) {
-      return (<>
-        <Button variant="primary" disabled>
-          <Spinner
-            as="span"
-            animation="border"
-            size="sm"
-            role="status"
-            aria-hidden="true"
-          />
-          <span className="sr-only">Loading...</span>
-        </Button>{' '}
-        <Button variant="primary" disabled>
-          <Spinner
-            as="span"
-            animation="grow"
-            size="sm"
-            role="status"
-            aria-hidden="true"
-          />
-      Loading...
-    </Button>
-      </>);
+//   }
+//   render() {
 
-    }
-    let currentRid = this.props.selectedTag['@rid'];
-    let images = this.state.images;
 
-    if (!this.state.tagList) return (<p>Loading Data</p>);
-    let selectedTag = this.props.selectedTag;
 
-    let tagged = images.filter(e => {
-      if (e.tags && e.tags.indexOf(currentRid) > -1) return e
-    });
+//     if (this.state.isLoading == true) {
+//       return (<>
+//         <Button variant="primary" disabled>
+//           <Spinner
+//             as="span"
+//             animation="border"
+//             size="sm"
+//             role="status"
+//             aria-hidden="true"
+//           />
+//           <span className="sr-only">Loading...</span>
+//         </Button>{' '}
+//         <Button variant="primary" disabled>
+//           <Spinner
+//             as="span"
+//             animation="grow"
+//             size="sm"
+//             role="status"
+//             aria-hidden="true"
+//           />
+//       Loading...
+//     </Button>
+//       </>);
+//     }
 
-    return (<div id="preview" className="customerdetails">
-      <Card bsStyle="info" className="centeralign">
-        <Card.Header>
-          <center><Badge><h3><b>Preview</b></h3></Badge></center>
-          <Card.Title ><b>Tag Name:</b> <div className="badge primary">{selectedTag.name}&nbsp;</div>  <b>Description:</b>{selectedTag.description}</Card.Title>
-          {/* <b>ParentTags:</b> {selectedTag.parenTagstHirearchy.map(tag => {
-            return (tag === "" ? "" : <div className="badge primary">{tag}&nbsp;</div>);
-          })}
+//     if (!this.state.showPreview) return (<div>            <Button variant="primary" block size="lg" onClick={() => {
+//       this.setState({ showPreview: !this.state.showPreview });
+//     }}>
+//       {this.state.showPreview ? "Hide Preview" : "Show Preview"}
+//     </Button>
+//     </div>);
 
-          <b>ChildTags:</b> {selectedTag.childTagsHirearchy.map(tag => {
-            return (tag === "" ? "" : <div className="badge primary">{tag}&nbsp;</div>);
-          })} */}
+//     let currentRid = this.props.selectedTag['@rid'];
+//     let images = this.state.images;
 
-          <center>This is preview of images related to this tag</center>
+//     if (!this.state.tagList) return (<p>Loading Data</p>);
+//     let selectedTag = this.props.selectedTag;
 
-          {/* <Link to={{ pathname: "/taglist#preview", id: this.props.currentId }} className="btn btn-primary">Preview</Link> */}
-        </Card.Header>
+//     let tagged = images.filter(e => {
+//       if (e.tags && e.tags.indexOf(currentRid) > -1) return e
+//     });
 
-        <Card.Body>
-          <br />
-          {tagged.map((img, index) => {
-            return (
-              <Card style={{ width: '50%', float: 'left' }}>
-                {/* <img src={'./images/' + img.path} onError={(e) => {
-                  e.target.onerror = null; e.target.src = "https://via.placeholder.com/600x200.png?text=..."
-                }} /> */}
+//   }
+// }
 
-                <Card.Img variant="top" src={"http://drive.google.com/thumbnail?id=" + img.id} />
-                <Card.Body>
-                  <Card.Title>{img.title}</Card.Title>
-                  <Card.Text>{img.description}</Card.Text>
-                </Card.Body>
-              </Card>
-            );
-          })}
-        </Card.Body>
-      </Card>
-    </div >)
-  }
+
+export default function Preview(props) {
+  console.log('Props...', props);
+  // return (<h3>Please select a Tag</h3>);
+  return (<div id="preview" className="customerdetails">
+    <Card bsStyle="info" className="centeralign">
+      <Card.Header>
+        <center><Badge><h3><b>Preview</b></h3></Badge></center>
+        <Card.Title ><b>Tag Name:</b> <div className="badge primary">{props.selectedTag.name}&nbsp;</div>  <b>Description:</b>{props.selectedTag.description}</Card.Title>
+        {/* <b>ParentTags:</b> {selectedTag.parenTagstHirearchy.map(tag => {
+        return (tag === "" ? "" : <div className="badge primary">{tag}&nbsp;</div>);
+      })}
+
+      <b>ChildTags:</b> {selectedTag.childTagsHirearchy.map(tag => {
+        return (tag === "" ? "" : <div className="badge primary">{tag}&nbsp;</div>);
+      })} */}
+
+        <center>This is preview of images related to this tag</center>
+
+        {/* <Link to={{ pathname: "/taglist#preview", id: this.props.currentId }} className="btn btn-primary">Preview</Link> */}
+      </Card.Header>
+
+      <Card.Body>
+        <br />
+        {props.tagged.map((img, index) => {
+          return (
+            <Card style={{ width: '50%', float: 'left' }}>
+              {/* <img src={'./images/' + img.path} onError={(e) => {
+              e.target.onerror = null; e.target.src = "https://via.placeholder.com/600x200.png?text=..."
+            }} /> */}
+
+              <Card.Img variant="top" src={"http://drive.google.com/thumbnail?id=" + img.id} />
+              <Card.Body>
+                <Card.Title>{img.title}</Card.Title>
+                <Card.Text>{img.description}</Card.Text>
+              </Card.Body>
+            </Card>
+          );
+        })}
+      </Card.Body>
+    </Card>
+  </div >)
 }
