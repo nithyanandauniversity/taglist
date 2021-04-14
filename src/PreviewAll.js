@@ -53,11 +53,24 @@ export default class PreviewAll extends Component {
       ...range(919, 937), ...range(976, 982), 1002, 1005, 1006,
       ...range(1210, 1217),
       ...range(2051, 2056),
-      ...range(2090, 2093), ...range(2183, 2185),
-      ...range(2185, 12726),
+      ...range(2090, 2093),
+      ...range(2183, 2185),
+      ...range(2231, 2239),
+      ...range(2292, 2293),
+      2421,
+      ...range(2922, 2947),
+      ...range(2992, 2995),
+      ...range(3001, 3007),
+      ...range(3139, 3164),
+      ...range(3186, 3199),
+      ...range(3186, 12726)
     ]
 
+
+    //? 2629-2784
+
     if (this.state.taggedImages == null) return (<h3>Loading</h3>);
+    let count = 0;
     return (<div id="preview" className="customerdetails">
       <Card className="centeralign">
         <Card.Header>
@@ -67,6 +80,7 @@ export default class PreviewAll extends Component {
         </Card.Header>
         <Card.Body>
           <br />
+
           {this.state.taggedImages.map((img, index) => {
 
             if (selected.indexOf(index) > -1)
@@ -78,7 +92,7 @@ export default class PreviewAll extends Component {
                   <Card.Img variant="top" alt={img.description} title={img.description} src={img.url} />
                   <Card.Body>
                     <Card.Text>{img.description.substring(0, 150)}</Card.Text>
-                    <a href={img.npediaURL}>src-{index}</a>
+                    <a href={img.npediaURL}>src-{index},{++count}</a>
                   </Card.Body>
                 </Card>
               );

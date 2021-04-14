@@ -54,9 +54,19 @@ export default class PreviewSelected extends Component {
       ...range(1210, 1217),
       ...range(2051, 2056),
       ...range(2090, 2093), ...range(2183, 2185),
+      ...range(2231, 2239),
+      ...range(2292, 2293),
+      2421,
+      ...range(2922, 2947),
+      ...range(2992, 2995),
+      ...range(3001, 3007),
+      ...range(3139, 3164),
+      ...range(3186, 3199),
     ]
 
-    if (this.state.taggedImages == null) return (<h3>Loading</h3>);
+    if (this.state.taggedImages == null) return (<h3>Loading...</h3>);
+    let taggedImages = this.state.taggedImages;
+    let count = 0;
     return (<div id="preview" className="customerdetails">
       <Card className="centeralign">
         <Card.Header>
@@ -64,25 +74,39 @@ export default class PreviewSelected extends Component {
           <Card.Title ><b>Tag Name:</b> <div className="badge primary">{this.state.selectedTag.name}&nbsp;</div>  <b>Description:</b>{this.state.selectedTag.description}</Card.Title>
           <center>This is preview of images related to this tag</center>
         </Card.Header>
-        <Card.Body>
-          <br />
-          {this.state.taggedImages.map((img, index) => {
-
-            if (selected.indexOf(index) > -1)
-              return (
-                <Card key={index} style={{ width: '50%', float: 'left' }}>
-                  {/* <img src={'./images/' + img.path} onError={(e) => {
-              e.target.onerror = null; e.target.src = "https://via.placeholder.com/600x200.png?text=..."
-            }} /> */}
-                  <Card.Img variant="top" alt={img.description} title={img.description} src={img.url} />
-                  <Card.Body>
-                    <Card.Text>{img.description.substring(0, 150)}</Card.Text>
-                    <a href={img.npediaURL}>src-{index}</a>
-                  </Card.Body>
-                </Card>
-              );
-          })}
-        </Card.Body>
+        {/* <Card.Body>        </Card.Body> */}
+        <br />
+        {taggedImages.map((img, index) => {
+          if (index % 2 == 1) return;
+          if (taggedImages.length - 1 == index) { taggedImages.push({ url: '', description: '' }) }
+          if (selected.indexOf(index) > -1)
+            return (
+              <div className='imagesblock'>
+                <div className='imagebox'>
+                  <div style={{ width: '45%' }}>
+                    <center><img src={taggedImages[index].url} />
+                      <p>{taggedImages[index].description}</p>
+                      <a href={img.npediaURL}>src-{index},{++count}</a></center>
+                  </div>
+                  <div style={{ width: '49.6%' }}>
+                    <center><img src={taggedImages[index + 1].url} />
+                      <p>{taggedImages[index + 1].description}</p>
+                      <a href={img.npediaURL}>src-{index + 1},{++count}</a></center>
+                  </div>
+                </div>
+              </div>
+              //<Card key={index} style={{ width: '10%', float: 'left' }}>
+              //           {/* <img src={'./images/' + img.path} onError={(e) => {
+              //   e.target.onerror = null; e.target.src = "https://via.placeholder.com/600x200.png?text=..."
+              // }} /> */}
+              //           <Card.Img variant="top" alt={img.description} title={img.description} src={img.url} />
+              //           <Card.Body>
+              //             <Card.Text>{img.description.substring(0, 150)}</Card.Text>
+              //             <a href={img.npediaURL}>..src-{++count}</a>
+              //           </Card.Body>
+              //</Card>
+            );
+        })}
       </Card>
     </div >)
 
