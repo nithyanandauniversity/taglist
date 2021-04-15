@@ -32,11 +32,10 @@ export default class PreviewSelected extends Component {
     });
   }
 
+  //Todo: Load images mnannualy and verify
   //? 176 - 200, 372 - 378, 396 - 403, 631 - 730, 741 - 771, 809 - 814, 829 - 834, 983-994, 1007-1012
   //? 107-1083, 1201-1209, 1220-1348,1831-1853,1956-1967, 2000-2048,
-
-  // 2057- 2074
-  // ];
+  //? 2057- 2074
 
   render() {
     let selected = [
@@ -62,20 +61,32 @@ export default class PreviewSelected extends Component {
       ...range(3001, 3007),
       ...range(3139, 3164),
       ...range(3186, 3199),
+      3355, 3356,
+      ...range(3411, 3413),
+      3533,
+      ...range(3707, 3726),
+      ...range(3809, 3812),
+      ...range(3919, 3920), ...range(3959, 3966), ...range(3970, 3971), ...range(3981, 3984), 3993, 3944,
+      ...range(3999, 4005)
     ]
+
+
+
+    //?? 3358-3382 3554-3560,3813-3912
+
 
     if (this.state.taggedImages == null) return (<h3>Loading...</h3>);
     let taggedImages = this.state.taggedImages;
     let count = 0;
     return (<div id="preview" className="customerdetails">
       <Card className="centeralign">
-        <Card.Header>
+        {/* <Card.Header>
           <center><Badge><h3><b>Preview</b></h3></Badge></center>
           <Card.Title ><b>Tag Name:</b> <div className="badge primary">{this.state.selectedTag.name}&nbsp;</div>  <b>Description:</b>{this.state.selectedTag.description}</Card.Title>
           <center>This is preview of images related to this tag</center>
-        </Card.Header>
+        </Card.Header> */}
         {/* <Card.Body>        </Card.Body> */}
-        <br />
+        {/* <br /> */}
         {taggedImages.map((img, index) => {
           if (index % 2 == 1) return;
           if (taggedImages.length - 1 == index) { taggedImages.push({ url: '', description: '' }) }
@@ -84,14 +95,14 @@ export default class PreviewSelected extends Component {
               <div className='imagesblock'>
                 <div className='imagebox'>
                   <div style={{ width: '45%' }}>
-                    <center><img src={taggedImages[index].url} />
+                    <center><img src={taggedImages[index].url} style={{ width: '100%' }} />
                       <p>{taggedImages[index].description}</p>
-                      <a href={img.npediaURL}>src-{index},{++count}</a></center>
+                      <a href={img.npediaURL}>src-{++count}</a></center>
                   </div>
-                  <div style={{ width: '49.6%' }}>
-                    <center><img src={taggedImages[index + 1].url} />
+                  <div style={{ width: '45%' }}>
+                    <center><img src={taggedImages[index + 1].url} style={{ width: '100%' }} />
                       <p>{taggedImages[index + 1].description}</p>
-                      <a href={img.npediaURL}>src-{index + 1},{++count}</a></center>
+                      <a href={img.npediaURL}>src-{++count}</a></center>
                   </div>
                 </div>
               </div>
