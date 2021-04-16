@@ -111,11 +111,11 @@ export default class PreviewSelected extends Component {
           if (taggedImages.length - 1 == index) { taggedImages.push({ url: '', description: '' }) }
           if (selected.indexOf(index) > -1) {
             let img = taggedImages[index];
-            let description1 = 'Date: ' + img.npediaURL.replace('https://nithyanandapedia.org/wiki/', '').replaceAll('_', ' ') + ' Anna Daan @ ' + img.description.replaceAll('[', '').replaceAll(']', '').replaceAll('Anna daan', '');
+            let description1 = 'Date: ' + img.npediaURL.replace('https://nithyanandapedia.org/wiki/', '').replaceAll('_', ' ') + ' Anna Daan @ ' + img.description.replaceAll('[', '').replaceAll(']', '').replaceAll('Anna daan', '').replaceAll('anna daan', '');
             let rating1 = img.rating = (img.rating == null) ? 0 : img.rating;
             // console.log(img.rating);
             img = taggedImages[index + 1];
-            let description2 = 'Date: ' + img.npediaURL.replace('https://nithyanandapedia.org/wiki/', '').replaceAll('_', ' ') + ' Anna Daan @ ' + img.description.replaceAll('[', '').replaceAll(']', '').replaceAll('Anna daan', '');
+            let description2 = 'Date: ' + img.npediaURL.replace('https://nithyanandapedia.org/wiki/', '').replaceAll('_', ' ') + ' Anna Daan @ ' + img.description.replaceAll('[', '').replaceAll(']', '').replaceAll('Anna daan', '').replaceAll('anna daan', '');
             let rating2 = img.rating = (img.rating == null) ? 0 : img.rating;
             // console.log(img.rating);
             return (
@@ -124,8 +124,8 @@ export default class PreviewSelected extends Component {
                   <div style={{ width: '45%' }}>
                     <center><img src={taggedImages[index].url} style={{ width: '100%' }} />
                       <EdiText type="text" tabIndex={++count} startEditingOnEnter cancelOnEscape submitOnEnter submitOnUnfocus showButtonsOnHover value={description1} onSave={handleSave} inputProps={{ index: index }} />
-                      <a href={taggedImages[index].npediaURL}>src-{count}</a></center>
-                    <StarPicker size={25} onChange={starValueChange} value={rating1} halfStars name={index} name={index + 1} />
+                      <a href={taggedImages[index].npediaURL}>src-{count}</a>
+                      <StarPicker size={25} onChange={starValueChange} value={rating1} halfStars name={index} name={index} /></center>
                   </div>
                   <div style={{ width: '45%' }}>
                     <center><img src={taggedImages[index + 1].url} style={{ width: '100%' }} />
