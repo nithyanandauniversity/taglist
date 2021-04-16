@@ -3,14 +3,13 @@ import axios from 'axios'
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from 'react-responsive-carousel';
 import ReactTags from 'react-tag-autocomplete'
-import { HashLink as Link } from 'react-router-hash-link';
 import './styles.css'
 import Card from 'react-bootstrap/Card';
 import Spinner from 'react-bootstrap/Spinner';
 import Button from 'react-bootstrap/Button';
 import Badge from 'react-bootstrap/Badge';
-import pako from 'pako';
 import range from 'lodash.range';
+import EdiText from 'react-editext'
 
 
 export default class PreviewAll extends Component {
@@ -37,6 +36,13 @@ export default class PreviewAll extends Component {
   // ];
 
   render() {
+
+    // const [value, setValue] = useState('');
+
+    const handleSave = (val, index) => {
+
+    }
+
     let selected = [
       ...range(5, 22),
       ...range(229, 238),
