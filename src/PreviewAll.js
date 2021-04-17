@@ -11,7 +11,6 @@ import Badge from 'react-bootstrap/Badge';
 import range from 'lodash.range';
 import EdiText from 'react-editext'
 
-
 export default class PreviewAll extends Component {
   // const [state, dispatch] = useContext(Context);
 

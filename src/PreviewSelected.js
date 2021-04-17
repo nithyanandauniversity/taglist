@@ -20,7 +20,7 @@ export default class PreviewSelected extends Component {
     super(props);
     this.state = {
       queryString: props.location.search,
-      edit: false
+      edit: true
     };
   }
 
@@ -147,7 +147,7 @@ export default class PreviewSelected extends Component {
               }
               img = taggedImages[index + 1];
               let desc2 = {
-                date: img.npediaURL.replace('https://nithyanandapedia.org/wiki/', ''),
+                date: img.npediaURL.replace('https://nithyanandapedia.org/wiki/', '').replaceAll('_', ' '),
                 desc: cleanTagDescription(img.description),
                 place: '', //getPlace(desc),
                 rating: (img.rating == null) ? 0 : img.rating
@@ -197,7 +197,7 @@ export default class PreviewSelected extends Component {
             }
             img = taggedImages[index + 1];
             let desc2 = {
-              date: img.npediaURL.replace('https://nithyanandapedia.org/wiki/', ''),
+              date: img.npediaURL.replace('https://nithyanandapedia.org/wiki/', '').replaceAll('_', ' '),
               desc: cleanTagDescription(img.description),
               place: '', //getPlace(desc),
               rating: (img.rating == null) ? 0 : img.rating
@@ -206,24 +206,27 @@ export default class PreviewSelected extends Component {
               <div className='imagesblock'>
                 <div className='imagebox'>
                   <div style={{ width: '45%' }}>
-                    <center><img src={taggedImages[index].url} style={{ width: '100%' }} />
-                      <Row className='justify-content-md-left' ><Col md='auto'><div style={{ padding: '8px 0px 0px 0px', color: 'blue', fontWeight: 'bold' }}><b></b>{desc1.date}:</div></Col>
+                    <center><img src={taggedImages[index].url} style={{ width: '100%' }} /></center>
+                    <p><a href={taggedImages[index].npediaURL} style={{ textDecoration: 'none' }}  ><strong>{desc1.date}</strong>:</a> {desc1.desc} <a href={taggedImages[index].npediaURL} style={{ textDecoration: 'none' }}>(See more)</a></p>
+                    {/* <Row className='justify-content-md-left' ><Col md='auto'><div style={{ padding: '8px 0px 0px 0px', color: 'blue', fontWeight: 'bold' }}><b></b>{desc1.date}:</div></Col>
                         <Col md='auto'><div style={{ padding: '8px 0px 0px 0px' }}>{desc1.desc} </div></Col>
                         <Col md='auto'><div style={{ padding: '8px 0px 0px 0px' }}><a style={{ textDecoration: 'none', color: 'blue' }} href={taggedImages[index].npediaURL}>(see more)</a></div></Col>
-                      </Row>
-                      {/* <StarPicker size={25} onChange={starValueChange} value={desc1.rating} halfStars name={index} name={index} /> */}
-                    </center>
+                      </Row> */}
+                    {/* <StarPicker size={25} onChange={starValueChange} value={desc1.rating} halfStars name={index} name={index} /> */}
+
                   </div>
                   <div style={{ width: '45%' }}>
-                    <center><img src={taggedImages[index + 1].url} style={{ width: '100%' }} />
-                      <Container fluid className='p-0'>
-                        <Row className='justify-content-md-left p-0' ><Col md='auto'><div style={{ color: 'blue', fontWeight: 'bold' }}><b></b>{desc2.date}:</div></Col>
+                    <center><img src={taggedImages[index + 1].url} style={{ width: '100%' }} /></center>
+                    <p><a href={taggedImages[index + 1].npediaURL} style={{ textDecoration: 'none' }}><strong>{desc2.date}</strong>:</a> {desc2.desc} <a href={taggedImages[index].npediaURL} style={{ textDecoration: 'none' }}>(See more)</a></p>
+
+                    {/* <Container fluid className='p-0'> */}
+                    {/* <Row className='justify-content-md-left p-0' ><Col md='auto'><div style={{ color: 'blue', fontWeight: 'bold' }}><b></b>{desc2.date}:</div></Col>
                           <Col md='auto'><div>{desc2.desc} </div></Col>
                           <Col md='auto'><div><a style={{ textDecoration: 'none', color: 'blue' }} href={taggedImages[index + 1].npediaURL}>(see more)</a></div></Col>
-                        </Row>
-                      </Container>
-                      {/* <StarPicker size={25} onChange={starValueChange} value={desc2.rating} halfStars name={index} name={index} /> */}
-                    </center>
+                        </Row> */}
+                    {/* </Container> */}
+                    {/* <StarPicker size={25} onChange={starValueChange} value={desc2.rating} halfStars name={index} name={index} /> */}
+
                   </div>
                 </div>
               </div>
