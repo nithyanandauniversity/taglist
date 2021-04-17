@@ -5,21 +5,23 @@ import { Carousel } from 'react-responsive-carousel';
 import ReactTags from 'react-tag-autocomplete'
 import './styles.css'
 import Card from 'react-bootstrap/Card';
-import Spinner from 'react-bootstrap/Spinner';
+import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 import Badge from 'react-bootstrap/Badge';
 import range from 'lodash.range';
 import EdiText from 'react-editext'
 import StarPicker from 'react-star-picker';
-
+import { sort as fuzzy } from 'fuzzyjs'
+import places from './Town_Codes_India_2001.json';
+import { Col, Container } from 'react-bootstrap';
 
 export default class PreviewSelected extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      queryString: props.location.search
+      queryString: props.location.search,
+      edit: false
     };
-
   }
 
   componentDidMount() {
@@ -44,7 +46,7 @@ export default class PreviewSelected extends Component {
 
     const handleSave = (value, props) => {
       let index = props.index;
-      this.state.taggedImages[index].description = value.split('Anna Daan @ ')[1];
+      this.state.taggedImages[index].description = value;
       this.setState({ taggedImages });
       console.log('update Value', value, props);
       console.log('update Value', this.state.taggedImages);
@@ -90,66 +92,145 @@ export default class PreviewSelected extends Component {
       ...range(3999, 4005)
     ]
 
+    const sort = () => {
+      let taggedImages = this.state.taggedImages;
+      taggedImages = taggedImages.sort(function (a, b) {
+        // console.log(a.rating, b.rating);
+        return (a.rating > b.rating)
+      });
+      this.setState({ taggedImages });
+      console.log('update Value', this.state.taggedImages);
+    }
+
+    const cleanTagDescription = (desc) => {
+      let description = desc.replaceAll('[', '')
+        .replaceAll(']', '')
+        .replaceAll('Anna daan', '')
+        .replaceAll('anna daan', '')
+        .replaceAll('Annadaan', '')
+        .replaceAll(',,', '');
+      description = description[description.length - 1] == ',' ? description.substring(0, description.length - 2) : description;
+      console.log('desc', description);
+      return description;
+    }
+
+    const getPlace = (desc) => {
+      let descs = desc.split(',');
+      descs.map(d => {
+        console.log(places.filter(fuzzy(d, { sourceAccessor: place => place.city_town })));
+      });
+      return desc;
+    }
 
     //?? 3358-3382 3554-3560,3813-3912
     if (this.state.taggedImages == null) return (<h3>Loading...</h3>);
     let taggedImages = this.state.taggedImages;
     let count = 0;
     // console.log('querry String', qs.parse(this.location.search));
-    return (<div id="preview" className="customerdetails">
+
+    if (this.state.edit == true)
+      return (<div id="preview">
+        {this.state.queryString ? this.state.queryString : ''}
+        <Button onClick={() => this.setState({ edit: false })}>Preivew</Button>
+        <Card className="centeralign">
+          {taggedImages.map((img, index) => {
+            if (index % 2 == 1) return;
+            if (taggedImages.length - 1 == index) { taggedImages.push({ url: '', description: '' }) }
+            if (selected.indexOf(index) > -1) {
+              let img = taggedImages[index];
+
+              let desc1 = {
+                date: img.npediaURL.replace('https://nithyanandapedia.org/wiki/', '').replaceAll('_', ' '),
+                desc: cleanTagDescription(img.description),
+                place: '',  //getPlace(desc),
+                rating: (img.rating == null) ? 0 : img.rating
+              }
+              img = taggedImages[index + 1];
+              let desc2 = {
+                date: img.npediaURL.replace('https://nithyanandapedia.org/wiki/', ''),
+                desc: cleanTagDescription(img.description),
+                place: '', //getPlace(desc),
+                rating: (img.rating == null) ? 0 : img.rating
+              }
+
+              return (
+                <div className='imagesblock'>
+                  <div className='imagebox'>
+                    <div style={{ width: '45%' }}>
+                      <center><img src={taggedImages[index].url} style={{ width: '100%' }} />
+                        <Row className='justify-content-md-left' ><Col md='auto'><div style={{ padding: '8px 0px 0px 0px', color: 'blue', fontWeight: 'bold' }}><b></b>{desc1.date}:</div></Col>
+                          <Col md='auto'><EdiText type="text" tabIndex={++count} startEditingOnEnter cancelOnEscape submitOnEnter submitOnUnfocus showButtonsOnHover value={desc1.desc} onSave={handleSave} inputProps={{ index: index }} /></Col>
+                          <Col md='auto'><div style={{ padding: '8px 0px 0px 0px' }}><a style={{ textDecoration: 'none', color: 'blue' }} href={taggedImages[index].npediaURL}>(see more)</a></div></Col>
+                        </Row>
+                        <StarPicker size={25} onChange={starValueChange} value={desc1.rating} halfStars name={index} name={index} /></center>
+                    </div>
+                    <div style={{ width: '45%' }}>
+                      <center><img src={taggedImages[index + 1].url} style={{ width: '100%' }} />
+                        <Row className='justify-content-md-left' ><Col md='auto'><div style={{ padding: '8px 0px 0px 0px', color: 'blue', fontWeight: 'bold' }}><b></b>{desc2.date}:</div></Col>
+                          <Col md='auto'><EdiText type="text" tabIndex={++count} startEditingOnEnter cancelOnEscape submitOnEnter submitOnUnfocus showButtonsOnHover value={desc2.desc} onSave={handleSave} inputProps={{ index: index + 1 }} /></Col>
+                          <Col md='auto'><div style={{ padding: '8px 0px 0px 0px' }}><a style={{ textDecoration: 'none', color: 'blue' }} href={taggedImages[index + 1].npediaURL}>(see more)</a></div></Col>
+                        </Row>
+                        <StarPicker size={25} onChange={starValueChange} value={desc2.rating} halfStars name={index} name={index} /></center>
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+          })}
+        </Card>
+      </div >)
+    else return (<div id="preview">
       {this.state.queryString ? this.state.queryString : ''}
+      <Button onClick={() => this.setState({ edit: true })}>Edit</Button>
       <Card className="centeralign">
-        {/* <Card.Header>
-          <center><Badge><h3><b>Preview</b></h3></Badge></center>
-          <Card.Title ><b>Tag Name:</b> <div className="badge primary">{this.state.selectedTag.name}&nbsp;</div>  <b>Description:</b>{this.state.selectedTag.description}</Card.Title>
-          <center>This is preview of images related to this tag</center>
-        </Card.Header> */}
-        {/* <Card.Body>        </Card.Body> */}
-        {/* <br /> */}
         {taggedImages.map((img, index) => {
           if (index % 2 == 1) return;
           if (taggedImages.length - 1 == index) { taggedImages.push({ url: '', description: '' }) }
           if (selected.indexOf(index) > -1) {
             let img = taggedImages[index];
-            let description1 = 'Date: ' + img.npediaURL.replace('https://nithyanandapedia.org/wiki/', '').replaceAll('_', ' ') + ' Anna Daan @ ' + img.description.replaceAll('[', '').replaceAll(']', '').replaceAll('Anna daan', '').replaceAll('anna daan', '');
-            let rating1 = img.rating = (img.rating == null) ? 0 : img.rating;
-            // console.log(img.rating);
+
+            let desc1 = {
+              date: img.npediaURL.replace('https://nithyanandapedia.org/wiki/', '').replaceAll('_', ' '),
+              desc: cleanTagDescription(img.description),
+              place: '',  //getPlace(desc),
+              rating: (img.rating == null) ? 0 : img.rating
+            }
             img = taggedImages[index + 1];
-            let description2 = 'Date: ' + img.npediaURL.replace('https://nithyanandapedia.org/wiki/', '').replaceAll('_', ' ') + ' Anna Daan @ ' + img.description.replaceAll('[', '').replaceAll(']', '').replaceAll('Anna daan', '').replaceAll('anna daan', '');
-            let rating2 = img.rating = (img.rating == null) ? 0 : img.rating;
-            // console.log(img.rating);
+            let desc2 = {
+              date: img.npediaURL.replace('https://nithyanandapedia.org/wiki/', ''),
+              desc: cleanTagDescription(img.description),
+              place: '', //getPlace(desc),
+              rating: (img.rating == null) ? 0 : img.rating
+            }
             return (
               <div className='imagesblock'>
                 <div className='imagebox'>
                   <div style={{ width: '45%' }}>
                     <center><img src={taggedImages[index].url} style={{ width: '100%' }} />
-                      <EdiText type="text" tabIndex={++count} startEditingOnEnter cancelOnEscape submitOnEnter submitOnUnfocus showButtonsOnHover value={description1} onSave={handleSave} inputProps={{ index: index }} />
-                      <a href={taggedImages[index].npediaURL}>src-{count}</a>
-                      <StarPicker size={25} onChange={starValueChange} value={rating1} halfStars name={index} name={index} /></center>
+                      <Row className='justify-content-md-left' ><Col md='auto'><div style={{ padding: '8px 0px 0px 0px', color: 'blue', fontWeight: 'bold' }}><b></b>{desc1.date}:</div></Col>
+                        <Col md='auto'><div style={{ padding: '8px 0px 0px 0px' }}>{desc1.desc} </div></Col>
+                        <Col md='auto'><div style={{ padding: '8px 0px 0px 0px' }}><a style={{ textDecoration: 'none', color: 'blue' }} href={taggedImages[index].npediaURL}>(see more)</a></div></Col>
+                      </Row>
+                      {/* <StarPicker size={25} onChange={starValueChange} value={desc1.rating} halfStars name={index} name={index} /> */}
+                    </center>
                   </div>
                   <div style={{ width: '45%' }}>
                     <center><img src={taggedImages[index + 1].url} style={{ width: '100%' }} />
-                      <EdiText type="text" tabIndex={++count} startEditingOnEnter cancelOnEscape submitOnEnter submitOnUnfocus showButtonsOnHover value={description2} onSave={handleSave} inputProps={{ index: index + 1 }} />
-                      <StarPicker size={25} onChange={starValueChange} value={rating2} halfStars name={index + 1} />
-                      <a href={taggedImages[index + 1].npediaURL}>src-{count}</a></center>
+                      <Container fluid className='p-0'>
+                        <Row className='justify-content-md-left p-0' ><Col md='auto'><div style={{ color: 'blue', fontWeight: 'bold' }}><b></b>{desc2.date}:</div></Col>
+                          <Col md='auto'><div>{desc2.desc} </div></Col>
+                          <Col md='auto'><div><a style={{ textDecoration: 'none', color: 'blue' }} href={taggedImages[index + 1].npediaURL}>(see more)</a></div></Col>
+                        </Row>
+                      </Container>
+                      {/* <StarPicker size={25} onChange={starValueChange} value={desc2.rating} halfStars name={index} name={index} /> */}
+                    </center>
                   </div>
                 </div>
               </div>
-              //<Card key={index} style={{ width: '10%', float: 'left' }}>
-              //           {/* <img src={'./images/' + img.path} onError={(e) => {
-              //   e.target.onerror = null; e.target.src = "https://via.placeholder.com/600x200.png?text=..."
-              // }} /> */}
-              //           <Card.Img variant="top" alt={img.description} title={img.description} src={img.url} />
-              //           <Card.Body>
-              //             <Card.Text>{img.description.substring(0, 150)}</Card.Text>
-              //             <a href={img.npediaURL}>..src-{++count}</a>
-              //           </Card.Body>
-              //</Card>
             );
           }
         })}
       </Card>
     </div >)
-
   }
 }
