@@ -20,12 +20,25 @@ export default class PreviewSelected extends Component {
     super(props);
     this.state = {
       queryString: props.location.search,
-      edit: true
+      edit: true,
+      om: 'red'
     };
   }
 
   componentDidMount() {
-    axios.get('/taglist/assets/tags/annadhan-updated.json').then(response => {
+    let filePath;
+    let param = this.state.queryString;
+    if (param === '?om=red' || param === '') {
+      filePath = '/assets/tags/annadhan-updated.json';
+      this.state.om = 'red';
+    }
+    if (param === '?om=orange') {
+
+      filePath = '/assets/tags/peace.json'
+      this.state.om = 'orange';
+    }
+
+    axios.get(filePath).then(response => {
       let taggedImages = response.data;
       let selectedTag = {};
       selectedTag.name = 'Anna Daan';
@@ -60,37 +73,6 @@ export default class PreviewSelected extends Component {
       console.log('update Value', this.state.taggedImages);
     }
 
-    let selected = [
-      ...range(5, 22),
-      ...range(229, 238),
-      312, 314, 316, 317,
-      ...range(319, 321),
-      ...range(324, 327),
-      ...range(329, 333), ...range(367, 369), 371,
-      392, ...range(525, 545),
-      ...range(572, 578),
-      ...range(621, 630), ...range(736, 738),
-      ...range(781, 784), 799, 800, 804, 806,
-      ...range(919, 937), ...range(976, 982), 1002, 1005, 1006,
-      ...range(1210, 1217),
-      ...range(2051, 2056),
-      ...range(2090, 2093), ...range(2183, 2185),
-      ...range(2231, 2239),
-      ...range(2292, 2293),
-      2421,
-      ...range(2922, 2947),
-      ...range(2992, 2995),
-      ...range(3001, 3007),
-      ...range(3139, 3164),
-      ...range(3186, 3199),
-      3355, 3356,
-      ...range(3411, 3413),
-      3533,
-      ...range(3707, 3726),
-      ...range(3809, 3812),
-      ...range(3919, 3920), ...range(3959, 3966), ...range(3970, 3971), ...range(3981, 3984), 3993, 3944,
-      ...range(3999, 4005)
-    ]
 
     const sort = () => {
       let taggedImages = this.state.taggedImages;
@@ -125,6 +107,41 @@ export default class PreviewSelected extends Component {
     //?? 3358-3382 3554-3560,3813-3912
     if (this.state.taggedImages == null) return (<h3>Loading...</h3>);
     let taggedImages = this.state.taggedImages;
+
+    let selected = [...range(0, 6000)];
+    if (this.state.om === 'red') selected = [
+      ...range(5, 22),
+      ...range(229, 238),
+      312, 314, 316, 317,
+      ...range(319, 321),
+      ...range(324, 327),
+      ...range(329, 333), ...range(367, 369), 371,
+      392, ...range(525, 545),
+      ...range(572, 578),
+      ...range(621, 630), ...range(736, 738),
+      ...range(781, 784), 799, 800, 804, 806,
+      ...range(919, 937), ...range(976, 982), 1002, 1005, 1006,
+      ...range(1210, 1217),
+      ...range(2051, 2056),
+      ...range(2090, 2093), ...range(2183, 2185),
+      ...range(2231, 2239),
+      ...range(2292, 2293),
+      2421,
+      ...range(2922, 2947),
+      ...range(2992, 2995),
+      ...range(3001, 3007),
+      ...range(3139, 3164),
+      ...range(3186, 3199),
+      3355, 3356,
+      ...range(3411, 3413),
+      3533,
+      ...range(3707, 3726),
+      ...range(3809, 3812),
+      ...range(3919, 3920), ...range(3959, 3966), ...range(3970, 3971), ...range(3981, 3984), 3993, 3944,
+      ...range(3999, 4005)
+    ]
+    console.log(this.state.om, selected);
+
     let count = 0;
     // console.log('querry String', qs.parse(this.location.search));
 
@@ -132,57 +149,6 @@ export default class PreviewSelected extends Component {
       return (<div id="preview">
         {this.state.queryString ? this.state.queryString : ''}
         <Button onClick={() => this.setState({ edit: false })}>Preivew</Button>
-        <Card className="centeralign">
-          {taggedImages.map((img, index) => {
-            if (index % 2 == 1) return;
-            if (taggedImages.length - 1 == index) { taggedImages.push({ url: '', description: '' }) }
-            if (selected.indexOf(index) > -1) {
-              let img = taggedImages[index];
-
-              let desc1 = {
-                date: img.npediaURL.replace('https://nithyanandapedia.org/wiki/', '').replaceAll('_', ' '),
-                desc: cleanTagDescription(img.description),
-                place: '',  //getPlace(desc),
-                rating: (img.rating == null) ? 0 : img.rating
-              }
-              img = taggedImages[index + 1];
-              let desc2 = {
-                date: img.npediaURL.replace('https://nithyanandapedia.org/wiki/', '').replaceAll('_', ' '),
-                desc: cleanTagDescription(img.description),
-                place: '', //getPlace(desc),
-                rating: (img.rating == null) ? 0 : img.rating
-              }
-
-              return (
-                <div className='imagesblock'>
-                  <div className='imagebox'>
-                    <div style={{ width: '45%' }}>
-                      <center><img src={taggedImages[index].url} style={{ width: '100%' }} />
-                        <Row className='justify-content-md-left' ><Col md='auto'><div style={{ padding: '8px 0px 0px 0px', color: 'blue', fontWeight: 'bold' }}><b></b>{desc1.date}:</div></Col>
-                          <Col md='auto'><EdiText type="text" tabIndex={++count} startEditingOnEnter cancelOnEscape submitOnEnter submitOnUnfocus showButtonsOnHover value={desc1.desc} onSave={handleSave} inputProps={{ index: index }} /></Col>
-                          <Col md='auto'><div style={{ padding: '8px 0px 0px 0px' }}><a style={{ textDecoration: 'none', color: 'blue' }} href={taggedImages[index].npediaURL}>(see more)</a></div></Col>
-                        </Row>
-                        <StarPicker size={25} onChange={starValueChange} value={desc1.rating} halfStars name={index} name={index} /></center>
-                    </div>
-                    <div style={{ width: '45%' }}>
-                      <center><img src={taggedImages[index + 1].url} style={{ width: '100%' }} />
-                        <Row className='justify-content-md-left' ><Col md='auto'><div style={{ padding: '8px 0px 0px 0px', color: 'blue', fontWeight: 'bold' }}><b></b>{desc2.date}:</div></Col>
-                          <Col md='auto'><EdiText type="text" tabIndex={++count} startEditingOnEnter cancelOnEscape submitOnEnter submitOnUnfocus showButtonsOnHover value={desc2.desc} onSave={handleSave} inputProps={{ index: index + 1 }} /></Col>
-                          <Col md='auto'><div style={{ padding: '8px 0px 0px 0px' }}><a style={{ textDecoration: 'none', color: 'blue' }} href={taggedImages[index + 1].npediaURL}>(see more)</a></div></Col>
-                        </Row>
-                        <StarPicker size={25} onChange={starValueChange} value={desc2.rating} halfStars name={index} name={index} /></center>
-                    </div>
-                  </div>
-                </div>
-              );
-            }
-          })}
-        </Card>
-      </div >)
-    else return (<div id="preview">
-      {this.state.queryString ? this.state.queryString : ''}
-      <Button onClick={() => this.setState({ edit: true })}>Edit</Button>
-      <Card className="centeralign">
         {taggedImages.map((img, index) => {
           if (index % 2 == 1) return;
           if (taggedImages.length - 1 == index) { taggedImages.push({ url: '', description: '' }) }
@@ -202,38 +168,85 @@ export default class PreviewSelected extends Component {
               place: '', //getPlace(desc),
               rating: (img.rating == null) ? 0 : img.rating
             }
+
             return (
               <div className='imagesblock'>
                 <div className='imagebox'>
                   <div style={{ width: '45%' }}>
-                    <center><img src={taggedImages[index].url} style={{ width: '100%' }} /></center>
-                    <p><a href={taggedImages[index].npediaURL} style={{ textDecoration: 'none' }}  ><strong>{desc1.date}</strong>:</a> {desc1.desc} <a href={taggedImages[index].npediaURL} style={{ textDecoration: 'none' }}>(See more)</a></p>
-                    {/* <Row className='justify-content-md-left' ><Col md='auto'><div style={{ padding: '8px 0px 0px 0px', color: 'blue', fontWeight: 'bold' }}><b></b>{desc1.date}:</div></Col>
-                        <Col md='auto'><div style={{ padding: '8px 0px 0px 0px' }}>{desc1.desc} </div></Col>
+                    <center><img src={taggedImages[index].url} style={{ width: '100%' }} />
+                      <Row className='justify-content-md-left' ><Col md='auto'><div style={{ padding: '8px 0px 0px 0px', color: 'blue', fontWeight: 'bold' }}><b></b>{desc1.date}:</div></Col>
+                        <Col md='auto'><EdiText type="text" tabIndex={++count} startEditingOnEnter cancelOnEscape submitOnEnter submitOnUnfocus showButtonsOnHover value={desc1.desc} onSave={handleSave} inputProps={{ index: index }} /></Col>
                         <Col md='auto'><div style={{ padding: '8px 0px 0px 0px' }}><a style={{ textDecoration: 'none', color: 'blue' }} href={taggedImages[index].npediaURL}>(see more)</a></div></Col>
-                      </Row> */}
-                    {/* <StarPicker size={25} onChange={starValueChange} value={desc1.rating} halfStars name={index} name={index} /> */}
-
+                      </Row>
+                      <StarPicker size={25} onChange={starValueChange} value={desc1.rating} halfStars name={index} name={index} /></center>
                   </div>
                   <div style={{ width: '45%' }}>
-                    <center><img src={taggedImages[index + 1].url} style={{ width: '100%' }} /></center>
-                    <p><a href={taggedImages[index + 1].npediaURL} style={{ textDecoration: 'none' }}><strong>{desc2.date}</strong>:</a> {desc2.desc} <a href={taggedImages[index].npediaURL} style={{ textDecoration: 'none' }}>(See more)</a></p>
-
-                    {/* <Container fluid className='p-0'> */}
-                    {/* <Row className='justify-content-md-left p-0' ><Col md='auto'><div style={{ color: 'blue', fontWeight: 'bold' }}><b></b>{desc2.date}:</div></Col>
-                          <Col md='auto'><div>{desc2.desc} </div></Col>
-                          <Col md='auto'><div><a style={{ textDecoration: 'none', color: 'blue' }} href={taggedImages[index + 1].npediaURL}>(see more)</a></div></Col>
-                        </Row> */}
-                    {/* </Container> */}
-                    {/* <StarPicker size={25} onChange={starValueChange} value={desc2.rating} halfStars name={index} name={index} /> */}
-
+                    <center><img src={taggedImages[index + 1].url} style={{ width: '100%' }} />
+                      <Row className='justify-content-md-left' ><Col md='auto'><div style={{ padding: '8px 0px 0px 0px', color: 'blue', fontWeight: 'bold' }}><b></b>{desc2.date}:</div></Col>
+                        <Col md='auto'><EdiText type="text" tabIndex={++count} startEditingOnEnter cancelOnEscape submitOnEnter submitOnUnfocus showButtonsOnHover value={desc2.desc} onSave={handleSave} inputProps={{ index: index + 1 }} /></Col>
+                        <Col md='auto'><div style={{ padding: '8px 0px 0px 0px' }}><a style={{ textDecoration: 'none', color: 'blue' }} href={taggedImages[index + 1].npediaURL}>(see more)</a></div></Col>
+                      </Row>
+                      <StarPicker size={25} onChange={starValueChange} value={desc2.rating} halfStars name={index} name={index} /></center>
                   </div>
                 </div>
               </div>
             );
           }
         })}
-      </Card>
+      </div >)
+    else return (<div id="preview">
+      {this.state.queryString ? this.state.queryString : ''}
+      <Button onClick={() => this.setState({ edit: true })}>Edit</Button>
+      {taggedImages.map((img, index) => {
+        if (index % 2 == 1) return;
+        if (taggedImages.length - 1 == index) { taggedImages.push({ url: '', description: '' }) }
+        if (selected.indexOf(index) > -1) {
+          let img = taggedImages[index];
+
+          let desc1 = {
+            date: img.npediaURL.replace('https://nithyanandapedia.org/wiki/', '').replaceAll('_', ' '),
+            desc: cleanTagDescription(img.description),
+            place: '',  //getPlace(desc),
+            rating: (img.rating == null) ? 0 : img.rating
+          }
+          img = taggedImages[index + 1];
+          let desc2 = {
+            date: img.npediaURL.replace('https://nithyanandapedia.org/wiki/', '').replaceAll('_', ' '),
+            desc: cleanTagDescription(img.description),
+            place: '', //getPlace(desc),
+            rating: (img.rating == null) ? 0 : img.rating
+          }
+          return (
+            <div className='imagesblock'>
+              <div className='imagebox'>
+                <div style={{ width: '45%' }}>
+                  <center><img src={taggedImages[index].url} style={{ width: '100%' }} /></center>
+                  <p><a href={taggedImages[index].npediaURL} style={{ textDecoration: 'none' }}  ><strong>{desc1.date}</strong>:</a> {desc1.desc} <a href={taggedImages[index].npediaURL} style={{ textDecoration: 'none' }}>(See more)</a></p>
+                  {/* <Row className='justify-content-md-left' ><Col md='auto'><div style={{ padding: '8px 0px 0px 0px', color: 'blue', fontWeight: 'bold' }}><b></b>{desc1.date}:</div></Col>
+                        <Col md='auto'><div style={{ padding: '8px 0px 0px 0px' }}>{desc1.desc} </div></Col>
+                        <Col md='auto'><div style={{ padding: '8px 0px 0px 0px' }}><a style={{ textDecoration: 'none', color: 'blue' }} href={taggedImages[index].npediaURL}>(see more)</a></div></Col>
+                      </Row> */}
+                  {/* <StarPicker size={25} onChange={starValueChange} value={desc1.rating} halfStars name={index} name={index} /> */}
+
+                </div>
+                <div style={{ width: '45%' }}>
+                  <center><img src={taggedImages[index + 1].url} style={{ width: '100%' }} /></center>
+                  <p><a href={taggedImages[index + 1].npediaURL} style={{ textDecoration: 'none' }}><strong>{desc2.date}</strong>:</a> {desc2.desc} <a href={taggedImages[index].npediaURL} style={{ textDecoration: 'none' }}>(See more)</a></p>
+
+                  {/* <Container fluid className='p-0'> */}
+                  {/* <Row className='justify-content-md-left p-0' ><Col md='auto'><div style={{ color: 'blue', fontWeight: 'bold' }}><b></b>{desc2.date}:</div></Col>
+                          <Col md='auto'><div>{desc2.desc} </div></Col>
+                          <Col md='auto'><div><a style={{ textDecoration: 'none', color: 'blue' }} href={taggedImages[index + 1].npediaURL}>(see more)</a></div></Col>
+                        </Row> */}
+                  {/* </Container> */}
+                  {/* <StarPicker size={25} onChange={starValueChange} value={desc2.rating} halfStars name={index} name={index} /> */}
+
+                </div>
+              </div>
+            </div>
+          );
+        }
+      })}
     </div >)
   }
 }

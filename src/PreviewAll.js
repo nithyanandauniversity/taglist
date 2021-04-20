@@ -20,7 +20,7 @@ export default class PreviewAll extends Component {
   }
 
   componentDidMount() {
-    axios.get('/taglist/assets/tags/annadhan.json').then(response => {
+    axios.get('/assets/tags/annadhan.json').then(response => {
       let taggedImages = response.data;
       let selectedTag = {};
       selectedTag.name = 'Anna Daan';
@@ -39,7 +39,6 @@ export default class PreviewAll extends Component {
     // const [value, setValue] = useState('');
 
     const handleSave = (val, index) => {
-
     }
 
     let selected = [
@@ -71,6 +70,7 @@ export default class PreviewAll extends Component {
       ...range(3809, 3812),
       ...range(3919, 3920), ...range(3959, 3966), ...range(3970, 3971), ...range(3981, 3984), 3993, 3944,
       ...range(3999, 4005),
+
       ...range(3186, 12726)
     ]
 
