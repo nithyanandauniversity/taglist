@@ -29,16 +29,17 @@ export default class PreviewSelected extends Component {
     let filePath;
     let param = this.state.queryString;
     if (param === '?om=red' || param === '') {
-      filePath = '/taglist/assets/tags/annadhan-updated.json';
+      filePath = '/assets/tags/annadhan-updated.json';
       this.state.om = 'red';
     }
     if (param === '?om=orange') {
 
-      filePath = '/taglist/assets/tags/peace.json'
+      filePath = '/assets/tags/peace.json'
       this.state.om = 'orange';
     }
 
-    axios.get(filePath).then(response => {
+    let url = 'http://localhost:4000/images/' + this.state.om;
+    axios.get(url).then(response => {
       let taggedImages = response.data;
       let selectedTag = {};
       selectedTag.name = 'Anna Daan';
@@ -57,9 +58,22 @@ export default class PreviewSelected extends Component {
 
   render() {
 
+    const updateRecord = (index) => {
+      let url = 'http://localhost:4000/images';
+      let data = {
+        om: this.state.om,
+        record: this.state.taggedImages[index],
+        index: index
+      }
+      axios.put(url, data).then(response => {
+        console.log(response);
+      });
+    }
+
     const handleSave = (value, props) => {
       let index = props.index;
       this.state.taggedImages[index].description = value;
+      updateRecord(index);
       this.setState({ taggedImages });
       console.log('update Value', value, props);
       console.log('update Value', this.state.taggedImages);
@@ -68,6 +82,7 @@ export default class PreviewSelected extends Component {
 
     const starValueChange = (value, index) => {
       this.state.taggedImages[index].rating = value;
+      updateRecord(index);
       this.setState({ taggedImages });
       console.log('update Value', value, index);
       console.log('update Value', this.state.taggedImages);
@@ -178,7 +193,7 @@ export default class PreviewSelected extends Component {
                         <Col md='auto'><EdiText type="text" tabIndex={++count} startEditingOnEnter cancelOnEscape submitOnEnter submitOnUnfocus showButtonsOnHover value={desc1.desc} onSave={handleSave} inputProps={{ index: index }} /></Col>
                         <Col md='auto'><div style={{ padding: '8px 0px 0px 0px' }}><a style={{ textDecoration: 'none', color: 'blue' }} href={taggedImages[index].npediaURL}>(see more)</a></div></Col>
                       </Row>
-                      <StarPicker size={25} onChange={starValueChange} value={desc1.rating} halfStars name={index} name={index} /></center>
+                      <StarPicker size={25} onChange={starValueChange} value={desc1.rating} halfStars name={index} /></center>
                   </div>
                   <div style={{ width: '45%' }}>
                     <center><img src={taggedImages[index + 1].url} style={{ width: '100%' }} />
@@ -186,7 +201,7 @@ export default class PreviewSelected extends Component {
                         <Col md='auto'><EdiText type="text" tabIndex={++count} startEditingOnEnter cancelOnEscape submitOnEnter submitOnUnfocus showButtonsOnHover value={desc2.desc} onSave={handleSave} inputProps={{ index: index + 1 }} /></Col>
                         <Col md='auto'><div style={{ padding: '8px 0px 0px 0px' }}><a style={{ textDecoration: 'none', color: 'blue' }} href={taggedImages[index + 1].npediaURL}>(see more)</a></div></Col>
                       </Row>
-                      <StarPicker size={25} onChange={starValueChange} value={desc2.rating} halfStars name={index} name={index} /></center>
+                      <StarPicker size={25} onChange={starValueChange} value={desc2.rating} halfStars name={index + 1} /></center>
                   </div>
                 </div>
               </div>

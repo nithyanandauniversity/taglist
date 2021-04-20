@@ -13,7 +13,6 @@ import EdiText from 'react-editext'
 
 export default class PreviewAll extends Component {
   // const [state, dispatch] = useContext(Context);
-
   constructor(props) {
     super(props);
     this.state = {};
@@ -41,6 +40,15 @@ export default class PreviewAll extends Component {
     const handleSave = (val, index) => {
     }
 
+    // enormity, swamy serving... al type of ppl, 
+    // number of meals...
+    // acroos regions...
+    // 3..4, accros timeli
+
+    //1) large cro,, accros time, location, typee, 3/4
+
+
+    // let selected = [...range(0, 5000)];
     let selected = [
       ...range(5, 22),
       ...range(229, 238),
@@ -78,6 +86,10 @@ export default class PreviewAll extends Component {
     //? 2629-2784
     //
 
+
+    //96-98, 392-395, 418-426, 752-755,761,1549-1551
+
+
     if (this.state.taggedImages == null) return (<h3>Loading</h3>);
     let count = 0;
     return (<div id="preview" className="customerdetails">
@@ -98,9 +110,9 @@ export default class PreviewAll extends Component {
                   {/* <img src={'./images/' + img.path} onError={(e) => {
               e.target.onerror = null; e.target.src = "https://via.placeholder.com/600x200.png?text=..."
             }} /> */}
-                  <Card.Img variant="top" alt={img.description} title={img.description} src={img.url} />
+                  <Card.Img variant="top" alt={img.description} title={img.description.substring(0, 50)} src={img.url} />
                   <Card.Body>
-                    <Card.Text>{img.description.substring(0, 150)}</Card.Text>
+                    <Card.Text>{img.description.substring(0, 50)}</Card.Text>
                     <a href={img.npediaURL}>src-{index},{++count}</a>
                   </Card.Body>
                 </Card>
