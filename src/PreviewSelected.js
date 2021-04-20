@@ -29,12 +29,12 @@ export default class PreviewSelected extends Component {
     let filePath;
     let param = this.state.queryString;
     if (param === '?om=red' || param === '') {
-      filePath = '/assets/tags/annadhan-updated.json';
+      filePath = '/taglist/assets/tags/annadhan-updated.json';
       this.state.om = 'red';
     }
     if (param === '?om=orange') {
 
-      filePath = '/assets/tags/peace.json'
+      filePath = '/taglist/assets/tags/peace.json'
       this.state.om = 'orange';
     }
 
