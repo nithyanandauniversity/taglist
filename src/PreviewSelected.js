@@ -33,13 +33,17 @@ export default class PreviewSelected extends Component {
       this.state.om = 'red';
     }
     if (param === '?om=orange') {
-
       filePath = '/assets/tags/peace.json'
       this.state.om = 'orange';
     }
 
-    let url = 'http://localhost:4000/images/' + this.state.om;
-    axios.get(url).then(response => {
+    let domain = 'http://taglist-mirror.herokuapp.com';
+    // domain = 'http://localhost:4000'
+
+    let url = domain + '/images/' + this.state.om; //local dev
+    // let url = 'https://anandan-mirror.herokuapp.com/images/' + this.state.om;
+    axios.get(url, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } },
+    ).then(response => {
       let taggedImages = response.data;
       let selectedTag = {};
       selectedTag.name = 'Anna Daan';
@@ -56,10 +60,13 @@ export default class PreviewSelected extends Component {
   //? 107-1083, 1201-1209, 1220-1348,1831-1853,1956-1967, 2000-2048,
   //? 2057- 2074
 
-  render() {
 
+
+  render() {
+    let domain = 'http://taglist-mirror.herokuapp.com';
+    // domain = 'http://localhost:4000'
     const updateRecord = (index) => {
-      let url = 'http://localhost:4000/images';
+      let url = domain + '/images';
       let data = {
         om: this.state.om,
         record: this.state.taggedImages[index],
@@ -93,10 +100,10 @@ export default class PreviewSelected extends Component {
       let taggedImages = this.state.taggedImages;
       taggedImages = taggedImages.sort(function (a, b) {
         // console.log(a.rating, b.rating);
-        return (a.rating > b.rating)
+        return (a.rating < b.rating)
       });
       this.setState({ taggedImages });
-      console.log('update Value', this.state.taggedImages);
+      console.log('Sorted images...as per rating', this.state.taggedImages);
     }
 
     const cleanTagDescription = (desc) => {
@@ -107,7 +114,6 @@ export default class PreviewSelected extends Component {
         .replaceAll('Annadaan', '')
         .replaceAll(',,', '');
       description = description[description.length - 1] == ',' ? description.substring(0, description.length - 2) : description;
-      console.log('desc', description);
       return description;
     }
 
@@ -159,15 +165,16 @@ export default class PreviewSelected extends Component {
 
     let count = 0;
     // console.log('querry String', qs.parse(this.location.search));
-
+    let imgs = [];
     if (this.state.edit == true)
-      return (<div id="preview">
+      return (<div id="edit">
         {this.state.queryString ? this.state.queryString : ''}
         <Button onClick={() => this.setState({ edit: false })}>Preivew</Button>
         {taggedImages.map((img, index) => {
           if (index % 2 == 1) return;
           if (taggedImages.length - 1 == index) { taggedImages.push({ url: '', description: '' }) }
-          if (selected.indexOf(index) > -1) {
+          // if (selected.indexOf(index) > -1) 
+          {
             let img = taggedImages[index];
 
             let desc1 = {
@@ -209,59 +216,65 @@ export default class PreviewSelected extends Component {
           }
         })}
       </div >)
-    else return (<div id="preview">
-      {this.state.queryString ? this.state.queryString : ''}
-      <Button onClick={() => this.setState({ edit: true })}>Edit</Button>
-      {taggedImages.map((img, index) => {
-        if (index % 2 == 1) return;
-        if (taggedImages.length - 1 == index) { taggedImages.push({ url: '', description: '' }) }
-        if (selected.indexOf(index) > -1) {
-          let img = taggedImages[index];
+    else {
+      sort();
 
-          let desc1 = {
-            date: img.npediaURL.replace('https://nithyanandapedia.org/wiki/', '').replaceAll('_', ' '),
-            desc: cleanTagDescription(img.description),
-            place: '',  //getPlace(desc),
-            rating: (img.rating == null) ? 0 : img.rating
-          }
-          img = taggedImages[index + 1];
-          let desc2 = {
-            date: img.npediaURL.replace('https://nithyanandapedia.org/wiki/', '').replaceAll('_', ' '),
-            desc: cleanTagDescription(img.description),
-            place: '', //getPlace(desc),
-            rating: (img.rating == null) ? 0 : img.rating
-          }
-          return (
-            <div className='imagesblock'>
-              <div className='imagebox'>
-                <div style={{ width: '45%' }}>
-                  <center><img src={taggedImages[index].url} style={{ width: '100%' }} /></center>
-                  <p><a href={taggedImages[index].npediaURL} style={{ textDecoration: 'none' }}  ><strong>{desc1.date}</strong>:</a> {desc1.desc} <a href={taggedImages[index].npediaURL} style={{ textDecoration: 'none' }}>(See more)</a></p>
-                  {/* <Row className='justify-content-md-left' ><Col md='auto'><div style={{ padding: '8px 0px 0px 0px', color: 'blue', fontWeight: 'bold' }}><b></b>{desc1.date}:</div></Col>
+      return (<div id="preview">
+        {this.state.queryString ? this.state.queryString : ''}
+        <Button onClick={() => this.setState({ edit: true })}>Edit</Button>
+        {taggedImages.map((img, index) => {
+          if (index % 2 == 1) return;
+          if (taggedImages.length - 1 == index) { taggedImages.push({ url: '', description: '' }) }
+          if (selected.indexOf(index) > -1) {
+            let img = taggedImages[index];
+            imgs.push(img);
+            let desc1 = {
+              date: img.npediaURL.replace('https://nithyanandapedia.org/wiki/', '').replaceAll('_', ' '),
+              desc: cleanTagDescription(img.description),
+              place: '',  //getPlace(desc),
+              rating: (img.rating == null) ? 0 : img.rating
+            }
+            img = taggedImages[index + 1];
+            let desc2 = {
+              date: img.npediaURL.replace('https://nithyanandapedia.org/wiki/', '').replaceAll('_', ' '),
+              desc: cleanTagDescription(img.description),
+              place: '', //getPlace(desc),
+              rating: (img.rating == null) ? 0 : img.rating
+            }
+            imgs.push(img);
+            console.log('imags..', imgs);
+            return (
+              <div className='imagesblock'>
+                <div className='imagebox'>
+                  <div style={{ width: '45%' }}>
+                    <center><img src={taggedImages[index].url} style={{ width: '100%' }} /></center>
+                    <p><a href={taggedImages[index].npediaURL} style={{ textDecoration: 'none' }}  ><strong>{desc1.date}</strong>:</a> {desc1.desc} <a href={taggedImages[index].npediaURL} style={{ textDecoration: 'none' }}>(See more)</a></p>
+                    {/* <Row className='justify-content-md-left' ><Col md='auto'><div style={{ padding: '8px 0px 0px 0px', color: 'blue', fontWeight: 'bold' }}><b></b>{desc1.date}:</div></Col>
                         <Col md='auto'><div style={{ padding: '8px 0px 0px 0px' }}>{desc1.desc} </div></Col>
                         <Col md='auto'><div style={{ padding: '8px 0px 0px 0px' }}><a style={{ textDecoration: 'none', color: 'blue' }} href={taggedImages[index].npediaURL}>(see more)</a></div></Col>
                       </Row> */}
-                  {/* <StarPicker size={25} onChange={starValueChange} value={desc1.rating} halfStars name={index} name={index} /> */}
+                    {/* <StarPicker size={25} onChange={starValueChange} value={desc1.rating} halfStars name={index} name={index} /> */}
 
-                </div>
-                <div style={{ width: '45%' }}>
-                  <center><img src={taggedImages[index + 1].url} style={{ width: '100%' }} /></center>
-                  <p><a href={taggedImages[index + 1].npediaURL} style={{ textDecoration: 'none' }}><strong>{desc2.date}</strong>:</a> {desc2.desc} <a href={taggedImages[index].npediaURL} style={{ textDecoration: 'none' }}>(See more)</a></p>
+                  </div>
+                  <div style={{ width: '45%' }}>
+                    <center><img src={taggedImages[index + 1].url} style={{ width: '100%' }} /></center>
+                    <p><a href={taggedImages[index + 1].npediaURL} style={{ textDecoration: 'none' }}><strong>{desc2.date}</strong>:</a> {desc2.desc} <a href={taggedImages[index + 1].npediaURL} style={{ textDecoration: 'none' }}>(See more)</a></p>
 
-                  {/* <Container fluid className='p-0'> */}
-                  {/* <Row className='justify-content-md-left p-0' ><Col md='auto'><div style={{ color: 'blue', fontWeight: 'bold' }}><b></b>{desc2.date}:</div></Col>
+                    {/* <Container fluid className='p-0'> */}
+                    {/* <Row className='justify-content-md-left p-0' ><Col md='auto'><div style={{ color: 'blue', fontWeight: 'bold' }}><b></b>{desc2.date}:</div></Col>
                           <Col md='auto'><div>{desc2.desc} </div></Col>
                           <Col md='auto'><div><a style={{ textDecoration: 'none', color: 'blue' }} href={taggedImages[index + 1].npediaURL}>(see more)</a></div></Col>
                         </Row> */}
-                  {/* </Container> */}
-                  {/* <StarPicker size={25} onChange={starValueChange} value={desc2.rating} halfStars name={index} name={index} /> */}
+                    {/* </Container> */}
+                    {/* <StarPicker size={25} onChange={starValueChange} value={desc2.rating} halfStars name={index} name={index} /> */}
 
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        }
-      })}
-    </div >)
+            );
+          }
+        })}
+      </div >)
+    }
   }
 }

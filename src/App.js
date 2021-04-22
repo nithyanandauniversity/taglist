@@ -52,8 +52,8 @@ const setLoading = (data) => ({ type: 'isLoading', data });
 // const modifyTitle = (data) => ({ type: 'modifyTitle', data });
 // const modifyDescription = (data) => ({ type: 'modifyDescription', data });
 
-const allTagsURL = 'http://localhost:4000/tags/';
-const taggedImagesURL = 'http://localhost:4000/tagged/';
+const allTagsURL = 'https://taglist-mirror.herokuapp.com/tags/'; //TODO: addd a revers proxy in appace for this 
+const taggedImagesURL = 'https://taglist-mirror.herokuapp.com/tagged/';
 
 const TagList = (props) => {
   const [{ tags, tagList, isLoading, selectedTag, suggestions, searchResult }, dispatch] = useContext(Context);
@@ -277,7 +277,7 @@ const TaggedItems = (props) => {
   useEffect(() => {
     let id = state.selectedTag['@rid'].toString().replace('#', '');
     console.log('taggedimages getting tag for Tag id', id, state.selectedTag);
-    axios.get('http://localhost:4000/tagged/' + id).then(taggedImages => {
+    axios.get('https://taglist-mirror.herokuapp.com/tagged/' + id).then(taggedImages => {
       tagged = taggedImages.data;
       console.log('taggedImages data  :', tagged)
       let data = { taggedImages: taggedImages.data };
