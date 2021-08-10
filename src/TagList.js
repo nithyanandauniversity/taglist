@@ -132,8 +132,8 @@ const TagList = (props) => {
             role="status"
             aria-hidden="true"
           />
-        Loading...
-      </Button>
+          Loading...
+        </Button>
       </>);
 
   let tagged = images.filter(e => {

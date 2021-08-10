@@ -29,11 +29,19 @@ export default class PreviewSelected extends Component {
     let filePath;
     let param = this.state.queryString;
     if (param === '?om=red' || param === '') {
-      filePath = '/assets/tags/annadhan-updated.json';
+      filePath = '/taglist/assets/tags/annadhan-updated.json';//path is wrong
+      // the path is relative 
+      // in local the path is 
+      //localhost:port/assets/tags/etc...
+      //in github the file is at
+      //nugithub/taglist/assets/tags/etc..
+      //but as per the code it is expecting it to be at
+      //nugithub/assets/tag/etc....
+      //yes correct it ad app names before the path in git, gennerally i used append appname while publish to git now i missed 
       this.state.om = 'red';
     }
     if (param === '?om=orange') {
-      filePath = '/assets/tags/peace.json'
+      filePath = '/taglist/assets/tags/peace.json'
       this.state.om = 'orange';
     }
 
