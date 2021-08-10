@@ -45,7 +45,7 @@ export default class PreviewSelected extends Component {
       this.state.om = 'orange';
     }
 
-    let domain = 'http://taglist-mirror.herokuapp.com';
+    let domain;//= 'http://taglist-mirror.herokuapp.com';
     // domain = 'http://localhost:4000'
     domain = '' // is this correct or we will have give full path ?
 
@@ -72,7 +72,7 @@ export default class PreviewSelected extends Component {
 
 
   render() {
-    let domain = 'http://taglist-mirror.herokuapp.com';
+    let domain = ''; // = 'http://taglist-mirror.herokuapp.com';
     // domain = 'http://localhost:4000'
     const updateRecord = (index) => {
       let url = domain + '/images';

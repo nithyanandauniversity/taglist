@@ -19,9 +19,10 @@ export default class PreviewAll extends Component {
   }
 
   componentDidMount() {
-    let domain = 'http://taglist-mirror.herokuapp.com';
+    let domain = ''; // = 'http://taglist-mirror.herokuapp.com';
     // domain = 'http://localhost:4000'
-    axios.get(domain + 'taglist/assets/tags/annadhan-updated.json').then(response => {
+    domain = '';
+    axios.get(domain + '/taglist/assets/tags/annadhan-updated.json').then(response => {
       let taggedImages = response.data;
       let selectedTag = {};
       selectedTag.name = 'Anna Daan';
