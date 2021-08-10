@@ -47,6 +47,7 @@ export default class PreviewSelected extends Component {
 
     let domain = 'http://taglist-mirror.herokuapp.com';
     // domain = 'http://localhost:4000'
+    domain = '' // is this correct or we will have give full path ?
 
     let url = domain + '/images/' + this.state.om; //local dev
     // let url = 'https://anandan-mirror.herokuapp.com/images/' + this.state.om;
